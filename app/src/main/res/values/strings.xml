@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DataBindingSample</string>
+    <string name="test">电影</string>
+</resources>
