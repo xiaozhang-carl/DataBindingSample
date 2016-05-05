@@ -12,7 +12,7 @@ import rx.Observable;
 
 /**
  * Created by zhanghongqiang on 16/3/31  下午3:58
- * ToDo:
+ * ToDo:网络访问
  */
 public interface Rest {
 
