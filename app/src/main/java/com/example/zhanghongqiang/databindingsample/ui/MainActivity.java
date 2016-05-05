@@ -8,13 +8,13 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.R;
-import com.example.zhanghongqiang.databindingsample.api.HttpMethods;
+import com.example.zhanghongqiang.databindingsample.api.ApiManager;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
+import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewPresenter;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.SubscriberOnNextListener;
+import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
 import com.example.zhanghongqiang.databindingsample.view.IFListview;
 
 import java.util.List;
@@ -26,8 +26,6 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements IFListview<Movie> {
 
     ActivityMainBinding binding;
-    //
-    SubscriberOnNextListener<List<Movie>> getTopMovieOnNext;
     //布局填充器
     LayoutInflater inflater;
     //列表代理
@@ -41,13 +39,6 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
         recyclerViewPresenter = RecyclerViewPresenter.with(this, this)
                 .recyclerView(binding.listview)
                 .build();
-        //对数据的操作
-        getTopMovieOnNext = new SubscriberOnNextListener<List<Movie>>() {
-            @Override
-            public void onNext(List<Movie> movies) {
-                recyclerViewPresenter.success(movies);
-            }
-        };
         //加载数据
         loadData();
     }
@@ -59,10 +50,21 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
 
     @Override
     public void loadData() {
-        HttpMethods.getInstance().getTopMovie(
-                new ProgressSubscriber(getTopMovieOnNext, MainActivity.this)
-                , recyclerViewPresenter.nextPage()
-                , recyclerViewPresenter.getPageSize());
+        //获取数据
+        subscriptionArrayList.add(
+                ApiManager.toSubscribe(this
+                        , ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize())
+                        , new OnNextOnError<HttpResult<List<Movie>>>() {
+                            @Override
+                            public void onNext(HttpResult<List<Movie>> listHttpResult) {
+                                recyclerViewPresenter.success(listHttpResult.getSubjects());
+                            }
+
+                            @Override
+                            public void onError() {
+                                recyclerViewPresenter.refreshComplete();
+                            }
+                        }));
     }
 
     @Override
