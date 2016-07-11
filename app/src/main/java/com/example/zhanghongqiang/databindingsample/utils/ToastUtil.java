@@ -5,13 +5,13 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 /**
- * User: Yaotian Leung
+ * CreditUser: Yaotian Leung
  * Date: 2013-11-13
  * Time: 17:39
  */
 public class ToastUtil {
 
-    private static Toast toast=null;
+    private static Toast toast = null;
 
     public static void show(Context context, int res) {
         if (context == null) {
@@ -31,7 +31,8 @@ public class ToastUtil {
         if (message.startsWith("htt")) {
             return;
         }
-        if (message.startsWith("<")) {
+        //我的网页版返回数据是 "message": "<img src=\"http://sibuwesaleimg1.orangebusiness.com.cn/uploads/xinweishang/05.png\" alt=\"\" />",
+        if (message.startsWith("<") && message.endsWith(">")) {
             return;
         }
         if (toast == null) {

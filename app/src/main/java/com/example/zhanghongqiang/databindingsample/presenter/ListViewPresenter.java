@@ -18,7 +18,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/3/1  下午4:58
  * ToDo:listView的代理者
  */
-public class ListViewPresenter<T> extends ListPresenter<IFListview> {
+public class ListViewPresenter<T> extends BasePresenter<IFListview> {
 
     //含有listView的activity
     private BaseActivity mActivity;
@@ -43,7 +43,7 @@ public class ListViewPresenter<T> extends ListPresenter<IFListview> {
         super(activity, F);
     }
 
-    @Override
+
     public void reLoadData() {
         if (F != null) {
             F.loadData();

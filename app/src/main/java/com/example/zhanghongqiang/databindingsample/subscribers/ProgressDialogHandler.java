@@ -1,7 +1,9 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
@@ -24,8 +26,8 @@ public class ProgressDialogHandler extends Handler {
                                  boolean cancelable) {
         super();
         this.context = context;
-        this.mProgressCancelListener = mProgressCancelListener;
         this.cancelable = cancelable;
+        this.mProgressCancelListener = mProgressCancelListener;
     }
 
     private void initProgressDialog() {
@@ -37,7 +39,8 @@ public class ProgressDialogHandler extends Handler {
                 pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
-                        mProgressCancelListener.onCancelProgress();
+                        if (mProgressCancelListener != null)
+                            mProgressCancelListener.onCancelProgress();
                     }
                 });
             }
@@ -51,6 +54,17 @@ public class ProgressDialogHandler extends Handler {
     private void dismissProgressDialog() {
         if (pd != null) {
             pd.dismiss();
+            if (pd.isShowing()) { //check if dialog is showing.
+                //get the Context object that was used to great the dialog
+                Context context = ((ContextWrapper) pd.getContext()).getBaseContext();
+                //if the Context used here was an activity AND it hasn't been finished or destroyed
+                //then dismiss it
+                if (context instanceof Activity) {
+                    if (!((Activity) context).isFinishing())
+                        pd.dismiss();
+                } //if the Context used wasnt an Activity, then dismiss it too
+//                    pd.dismiss();
+            }
             pd = null;
         }
     }

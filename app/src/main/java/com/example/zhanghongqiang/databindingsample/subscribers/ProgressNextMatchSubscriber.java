@@ -18,16 +18,17 @@ import rx.Subscriber;
  * 调用者自己对请求数据进行处理
  * Created by liukun on 16/3/10.
  */
-public class ProgressNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class ProgressNextMatchSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     //观察者的下一步监听
-    private OnNext mOnNext;
+    private OnNextNotMatch mOnNext;
     //显示进度条对话
     private ProgressDialogHandler mProgressDialogHandler;
 
     private Context context;
 
-    public ProgressNextSubscriber(Context context, OnNext mOnNext) {
+
+    public ProgressNextMatchSubscriber(Context context, OnNextNotMatch mOnNext) {
         this.mOnNext = mOnNext;
         this.context = context;
         mProgressDialogHandler = new ProgressDialogHandler(context, this, true);

@@ -6,5 +6,5 @@ package com.example.zhanghongqiang.databindingsample.subscribers;
  */
 public interface OnNextOnError<T>{
     void onNext(T t);
-    void onError();
+    void onError(Throwable e);
 }

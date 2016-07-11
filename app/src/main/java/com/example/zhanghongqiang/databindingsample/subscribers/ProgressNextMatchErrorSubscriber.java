@@ -1,11 +1,11 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
-
-import com.example.zhanghongqiang.databindingsample.progress.ProgressCancelListener;
-import com.example.zhanghongqiang.databindingsample.progress.ProgressDialogHandler;
+import com.example.zhanghongqiang.databindingsample.R;
+import com.example.zhanghongqiang.databindingsample.model.HttpResult;
+import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -17,29 +17,33 @@ import rx.Subscriber;
  * 在Http请求结束是，关闭ProgressDialog
  * 调用者自己对请求数据进行处理
  * Created by liukun on 16/3/10.
+ * ToDo:带进度条的提供给列表使用的订阅者,需要返回结果的使用
  */
-public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class ProgressNextMatchErrorSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     //观察者的下一步监听
-    private SubscriberOnNextListener mSubscriberOnNextListener;
+    private OnNextNotMatchOnError listener;
     //显示进度条对话
     private ProgressDialogHandler mProgressDialogHandler;
 
     private Context context;
 
-    public ProgressSubscriber(SubscriberOnNextListener mSubscriberOnNextListener, Context context) {
-        this.mSubscriberOnNextListener = mSubscriberOnNextListener;
+    public ProgressNextMatchErrorSubscriber(Context context, OnNextNotMatchOnError listener) {
+
+        this.listener = listener;
+
         this.context = context;
-        mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
+
+        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
     }
 
-    private void showProgressDialog(){
+    private void showProgressDialog() {
         if (mProgressDialogHandler != null) {
             mProgressDialogHandler.obtainMessage(ProgressDialogHandler.SHOW_PROGRESS_DIALOG).sendToTarget();
         }
     }
 
-    private void dismissProgressDialog(){
+    private void dismissProgressDialog() {
         if (mProgressDialogHandler != null) {
             mProgressDialogHandler.obtainMessage(ProgressDialogHandler.DISMISS_PROGRESS_DIALOG).sendToTarget();
             mProgressDialogHandler = null;
@@ -61,37 +65,40 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
     @Override
     public void onCompleted() {
         dismissProgressDialog();
-        Toast.makeText(context, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 对错误进行统一处理
      * 隐藏ProgressDialog
+     *
      * @param e
      */
     @Override
     public void onError(Throwable e) {
-        if (e instanceof SocketTimeoutException) {
-            Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
-        } else if (e instanceof ConnectException) {
-            Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "error:" + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        Log.i("123", e.toString());
         dismissProgressDialog();
+        if (listener != null) {
+            listener.onError(e);
+        }
+        if (e instanceof ConnectException) {
+            ToastUtil.show(context, "网络中断，请检查您的网络状态");
+        } else if (e instanceof SocketTimeoutException) {
+            ToastUtil.show(context, "网络中断，请检查您的网络状态");
+        } else {
+            ToastUtil.show(context, context.getString(R.string.network_error));
+        }
 
     }
 
     /**
      * 将onNext方法中的返回结果交给Activity或Fragment自己处理
-     *
-     * @param t 创建Subscriber时的泛型类型
      */
     @Override
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
-        if (mSubscriberOnNextListener != null) {
-            mSubscriberOnNextListener.onNext(t);
+        if (listener != null) {
+            HttpResult<T> result = (HttpResult<T>) t;
+            listener.onNext(result);
         }
     }
 

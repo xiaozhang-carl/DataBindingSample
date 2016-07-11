@@ -1,7 +1,10 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.example.zhanghongqiang.databindingsample.R;
+import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
 
 import java.net.ConnectException;
@@ -30,7 +33,7 @@ public class ProgressNextErrorSubscriber<T> extends Subscriber<T> implements Pro
         this.mOnNextListener = mOnNextListener;
 
         this.context = context;
-        //判断
+
         mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
     }
 
@@ -72,16 +75,17 @@ public class ProgressNextErrorSubscriber<T> extends Subscriber<T> implements Pro
      */
     @Override
     public void onError(Throwable e) {
+        Log.i("123", e.toString());
         dismissProgressDialog();
         if (mOnNextListener != null) {
-            mOnNextListener.onError();
+            mOnNextListener.onError(e);
         }
-        if (e instanceof SocketTimeoutException) {
+        if (e instanceof ConnectException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
-        } else if (e instanceof ConnectException) {
+        } else if (e instanceof SocketTimeoutException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
         } else {
-            ToastUtil.show(context, "网络连接失败");
+            ToastUtil.show(context, context.getString(R.string.network_error));
         }
 
     }
@@ -93,7 +97,8 @@ public class ProgressNextErrorSubscriber<T> extends Subscriber<T> implements Pro
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
         if (mOnNextListener != null) {
-            mOnNextListener.onNext(t);
+            HttpResult<T> result = (HttpResult<T>) t;
+            mOnNextListener.onNext(result);
         }
     }
 

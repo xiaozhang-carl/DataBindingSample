@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DataBindingSample</string>
     <string name="test">电影</string>
+    <string name="network_error">网络链接失败，请重试</string>
 </resources>

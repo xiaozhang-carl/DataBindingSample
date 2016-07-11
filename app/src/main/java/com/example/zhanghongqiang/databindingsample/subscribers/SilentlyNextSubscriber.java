@@ -1,5 +1,6 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
+import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 
 import rx.Subscriber;
 
@@ -7,11 +8,11 @@ import rx.Subscriber;
  * Created by liukun on 16/3/10.
  * ToDo:没有进度条的订阅者,后台加载,并在页面显示
  */
-public class BackgroudNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class SilentlyNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     private OnNext mOnNext;
 
-    public BackgroudNextSubscriber(OnNext mOnNext) {
+    public SilentlyNextSubscriber(OnNext mOnNext) {
         this.mOnNext = mOnNext;
     }
 
@@ -51,8 +52,8 @@ public class BackgroudNextSubscriber<T> extends Subscriber<T> implements Progres
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
         if (mOnNext != null) {
-            //返回数据为非空的判断没做
-            mOnNext.onNext(t);
+            HttpResult<T> result = (HttpResult<T>) t;
+            mOnNext.onNext(result);
         }
     }
 

@@ -13,7 +13,7 @@ import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBind
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
-import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewPresenter;
+import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerViewPresenter;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
 import com.example.zhanghongqiang.databindingsample.view.IFListview;
 
@@ -29,14 +29,14 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
     //布局填充器
     LayoutInflater inflater;
     //列表代理
-    RecyclerViewPresenter recyclerViewPresenter;
+    XRecyclerViewPresenter recyclerViewPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         inflater = getLayoutInflater();
-        recyclerViewPresenter = RecyclerViewPresenter.with(this, this)
+        recyclerViewPresenter = XRecyclerViewPresenter.with(this, this)
                 .recyclerView(binding.listview)
                 .build();
         //加载数据
@@ -50,21 +50,19 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
 
     @Override
     public void loadData() {
-        //获取数据
-        subscriptionArrayList.add(
-                ApiManager.toSubscribe(this
-                        , ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize())
-                        , new OnNextOnError<HttpResult<List<Movie>>>() {
-                            @Override
-                            public void onNext(HttpResult<List<Movie>> listHttpResult) {
-                                recyclerViewPresenter.success(listHttpResult.getSubjects());
-                            }
+        subscriptionArrayList.add(ApiManager.toSubscribe(this, ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnError<HttpResult<List<Movie>>>() {
 
-                            @Override
-                            public void onError() {
-                                recyclerViewPresenter.refreshComplete();
-                            }
-                        }));
+
+            @Override
+            public void onNext(HttpResult<List<Movie>> listHttpResult) {
+                recyclerViewPresenter.success(listHttpResult.getSubjects());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                recyclerViewPresenter.refreshComplete();
+            }
+        }));
     }
 
     @Override
