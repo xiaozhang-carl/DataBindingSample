@@ -17,20 +17,42 @@ import rx.Subscriber;
  * 在Http请求结束是，关闭ProgressDialog
  * 调用者自己对请求数据进行处理
  * Created by liukun on 16/3/10.
+ * ToDo:带进度条的提供给列表使用的订阅者,需要返回结果的使用
  */
-public class ProgressNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class ProgressOnNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     //观察者的下一步监听
-    private OnNext mOnNext;
+    private OnNext nextListener;
     //显示进度条对话
     private ProgressDialogHandler mProgressDialogHandler;
 
     private Context context;
 
-    public ProgressNextSubscriber(Context context, OnNext mOnNext) {
-        this.mOnNext = mOnNext;
+    public ProgressOnNextSubscriber(Context context, OnNext nextListener) {
+
+        this.nextListener = nextListener;
+
         this.context = context;
-        mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
+
+        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
+    }
+
+    public ProgressOnNextSubscriber(Context context, OnNextOnErrorNoMatch nextListener) {
+
+        this.nextListener = nextListener;
+
+        this.context = context;
+
+        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
+    }
+
+    public ProgressOnNextSubscriber(Context context, OnNextOnError nextListener) {
+
+        this.nextListener = nextListener;
+
+        this.context = context;
+
+        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
     }
 
 
@@ -74,10 +96,12 @@ public class ProgressNextSubscriber<T> extends Subscriber<T> implements Progress
     public void onError(Throwable e) {
         Log.i("123", e.toString());
         dismissProgressDialog();
-
-        if (e instanceof SocketTimeoutException) {
+        if (nextListener != null && nextListener instanceof OnNextOnError) {
+            ((OnNextOnError) nextListener).onError(e);
+        }
+        if (e instanceof ConnectException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
-        } else if (e instanceof ConnectException) {
+        } else if (e instanceof SocketTimeoutException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
         } else {
             ToastUtil.show(context, context.getString(R.string.network_error));
@@ -91,9 +115,15 @@ public class ProgressNextSubscriber<T> extends Subscriber<T> implements Progress
     @Override
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
-        if (mOnNext != null) {
+        if (nextListener != null) {
             HttpResult<T> result = (HttpResult<T>) t;
-            mOnNext.onNext(result);
+//            if (result.code==0){
+//                nextListener.onNext(result);
+//            }else if (nextListener!=null  && nextListener instanceof NoMatch){
+//                ((NoMatch)nextListener).notMatch(result);
+//            }
+            nextListener.onNext(result);
+
         }
     }
 

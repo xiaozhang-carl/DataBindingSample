@@ -1,4 +1,4 @@
-package com.example.zhanghongqiang.databindingsample.view;
+package com.example.zhanghongqiang.databindingsample.presenter;
 
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;

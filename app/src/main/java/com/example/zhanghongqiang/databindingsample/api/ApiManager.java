@@ -2,15 +2,10 @@ package com.example.zhanghongqiang.databindingsample.api;
 
 import android.content.Context;
 
-import com.example.zhanghongqiang.databindingsample.subscribers.OnNext;
-import com.example.zhanghongqiang.databindingsample.subscribers.OnNextNotMatch;
-import com.example.zhanghongqiang.databindingsample.subscribers.OnNextNotMatchOnError;
+import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressNextErrorSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressNextMatchErrorSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressNextMatchSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressNextSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.SilentlyNextErrorSubscriber;
+import com.example.zhanghongqiang.databindingsample.subscribers.OnNext;
+import com.example.zhanghongqiang.databindingsample.subscribers.ProgressOnNextSubscriber;
 import com.example.zhanghongqiang.databindingsample.subscribers.SilentlyNextSubscriber;
 
 import java.io.IOException;
@@ -86,7 +81,6 @@ public class ApiManager {
     }
 
     /**
-     * 显示加载进度条的网络处理,返回成功
      *
      * @param context      上下文
      * @param o            rest返回的Observabler
@@ -96,27 +90,28 @@ public class ApiManager {
     public static <T> Subscription toSubscribe(Context context, rx.Observable<T> o, OnNext<T> nextListener) {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressNextSubscriber<T>(context, nextListener));
+              .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
     }
 
     /**
-     * 显示加载进度条的网络处理,返回返回成功,结果不匹配
      *
      * @param context      上下文
      * @param o            rest返回的Observabler
      * @param nextListener 回调结果的接口
      * @param <T>
      */
-    public static <T> Subscription toSubscribe(Context context, rx.Observable<T> o, OnNextNotMatch<T> nextListener) {
+    public static <T> Subscription toSubscribe(Context context, rx.Observable<T> o, OnNextOnErrorNoMatch<T> nextListener) {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressNextMatchSubscriber<T>(context, nextListener));
+                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
     }
 
+
+
+
     /**
-     * 显示加载进度条的网络处理,刷新列表示用,需要处理返回结果的使用,返回成功和失败
      *
      * @param context      上下文
      * @param o            rest返回的Observabler
@@ -127,24 +122,7 @@ public class ApiManager {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressNextErrorSubscriber<T>(context, nextListener));
-
-    }
-
-
-    /**
-     * 显示加载进度条的网络处理,刷新列表示用,需要处理返回结果的使用,返回成功,结果不匹配和失败
-     *
-     * @param context      上下文
-     * @param o            rest返回的Observabler
-     * @param nextListener 回调结果的接口
-     * @param <T>
-     */
-    public static <T> Subscription toSubscribe(Context context, rx.Observable<T> o, OnNextNotMatchOnError<T> nextListener) {
-        return o.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressNextMatchErrorSubscriber<T>(context, nextListener));
+                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
 
     }
 
@@ -160,20 +138,6 @@ public class ApiManager {
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SilentlyNextSubscriber<T>(nextListener));
-    }
-
-    /**
-     * 后台默认加载数据,返回成功和失败
-     *
-     * @param o
-     * @param nextListener
-     * @param <T>
-     */
-    public static <T> Subscription toSubscribe(rx.Observable<T> o, OnNextOnError<T> nextListener) {
-        return o.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SilentlyNextErrorSubscriber<T>(nextListener));
     }
 
 

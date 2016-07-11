@@ -2,7 +2,6 @@ package com.example.zhanghongqiang.databindingsample.presenter;
 
 
 import com.example.zhanghongqiang.databindingsample.ui.BaseActivity;
-import com.example.zhanghongqiang.databindingsample.view.IFBaseView;
 
 /**
  * Created by zhanghongqiang

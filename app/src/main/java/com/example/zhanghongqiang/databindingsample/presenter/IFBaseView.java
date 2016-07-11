@@ -1,4 +1,4 @@
-package com.example.zhanghongqiang.databindingsample.view;
+package com.example.zhanghongqiang.databindingsample.presenter;
 
 /**
  * Created by zhanghongqiang on 16/3/7  下午3:01

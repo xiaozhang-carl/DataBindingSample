@@ -9,7 +9,6 @@ import android.widget.ListView;
 
 
 import com.example.zhanghongqiang.databindingsample.ui.BaseActivity;
-import com.example.zhanghongqiang.databindingsample.view.IFListview;
 
 import java.util.ArrayList;
 import java.util.List;

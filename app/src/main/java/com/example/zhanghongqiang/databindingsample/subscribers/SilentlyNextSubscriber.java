@@ -8,7 +8,7 @@ import rx.Subscriber;
  * Created by liukun on 16/3/10.
  * ToDo:没有进度条的订阅者,后台加载,并在页面显示
  */
-public class SilentlyNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class SilentlyNextSubscriber<T> extends Subscriber<T> {
 
     private OnNext mOnNext;
 
@@ -17,10 +17,6 @@ public class SilentlyNextSubscriber<T> extends Subscriber<T> implements Progress
     }
 
 
-    /**
-     * 订阅开始时调用
-     * 显示ProgressDialog
-     */
     @Override
     public void onStart() {
 
@@ -57,13 +53,4 @@ public class SilentlyNextSubscriber<T> extends Subscriber<T> implements Progress
         }
     }
 
-    /**
-     * 取消ProgressDialog的时候，取消对observable的订阅，同时也取消了http请求
-     */
-    @Override
-    public void onCancelProgress() {
-        if (!this.isUnsubscribed()) {
-            this.unsubscribe();
-        }
-    }
 }

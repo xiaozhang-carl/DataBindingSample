@@ -9,6 +9,7 @@ public class HttpResult<T> {
     private int start;
     private int total;
     private String title;
+//    public int code;
 
     //用来模仿Data
     private T subjects;

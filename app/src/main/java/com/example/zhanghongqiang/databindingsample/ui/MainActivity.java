@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,8 +15,8 @@ import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerViewPresenter;
-import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
-import com.example.zhanghongqiang.databindingsample.view.IFListview;
+import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
+import com.example.zhanghongqiang.databindingsample.presenter.IFListview;
 
 import java.util.List;
 
@@ -50,13 +51,19 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
 
     @Override
     public void loadData() {
-        subscriptionArrayList.add(ApiManager.toSubscribe(this, ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnError<HttpResult<List<Movie>>>() {
+        subscriptionArrayList.add(ApiManager.toSubscribe(this, ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 
 
             @Override
             public void onNext(HttpResult<List<Movie>> listHttpResult) {
                 recyclerViewPresenter.success(listHttpResult.getSubjects());
             }
+
+            @Override
+            public void notMatch(HttpResult<List<Movie>> listHttpResult) {
+                Log.i("123","result not match");
+            }
+
 
             @Override
             public void onError(Throwable e) {

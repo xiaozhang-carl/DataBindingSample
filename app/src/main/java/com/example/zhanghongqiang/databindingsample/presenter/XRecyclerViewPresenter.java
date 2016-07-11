@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.ui.BaseActivity;
-import com.example.zhanghongqiang.databindingsample.view.IFListview;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
