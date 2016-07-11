@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.R;
-import com.example.zhanghongqiang.databindingsample.api.ApiManager;
+import com.example.zhanghongqiang.databindingsample.api.API;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
 
     @Override
     public void loadData() {
-        subscriptionArrayList.add(ApiManager.toSubscribe(this, ApiManager.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
+        subscriptionArrayList.add(API.toSubscribe(this, API.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 
 
             @Override

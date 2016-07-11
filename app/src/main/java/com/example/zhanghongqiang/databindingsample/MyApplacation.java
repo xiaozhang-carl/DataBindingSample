@@ -7,6 +7,7 @@ import android.app.Application;
  * ToDo:
  */
 public class MyApplacation extends Application {
+
     private static MyApplacation application;
 
     public static MyApplacation getInstance() {
