@@ -19,7 +19,7 @@ import rx.Subscriber;
  * Created by liukun on 16/3/10.
  * ToDo:带进度条的提供给列表使用的订阅者,需要返回结果的使用
  */
-public class ProgressOnNextSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
+public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     //观察者的下一步监听
     private OnNext nextListener;
@@ -28,25 +28,7 @@ public class ProgressOnNextSubscriber<T> extends Subscriber<T> implements Progre
 
     private Context context;
 
-    public ProgressOnNextSubscriber(Context context, OnNext nextListener) {
-
-        this.nextListener = nextListener;
-
-        this.context = context;
-
-        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
-    }
-
-    public ProgressOnNextSubscriber(Context context, OnNextOnErrorNoMatch nextListener) {
-
-        this.nextListener = nextListener;
-
-        this.context = context;
-
-        mProgressDialogHandler = new ProgressDialogHandler(this.context, this, true);
-    }
-
-    public ProgressOnNextSubscriber(Context context, OnNextOnError nextListener) {
+    public ProgressSubscriber(Context context, OnNext nextListener) {
 
         this.nextListener = nextListener;
 

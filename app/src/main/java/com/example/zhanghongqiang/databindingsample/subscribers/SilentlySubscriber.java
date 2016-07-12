@@ -8,11 +8,11 @@ import rx.Subscriber;
  * Created by liukun on 16/3/10.
  * ToDo:没有进度条的订阅者,后台加载,并在页面显示
  */
-public class SilentlyNextSubscriber<T> extends Subscriber<T> {
+public class SilentlySubscriber<T> extends Subscriber<T> {
 
     private OnNext mOnNext;
 
-    public SilentlyNextSubscriber(OnNext mOnNext) {
+    public SilentlySubscriber(OnNext mOnNext) {
         this.mOnNext = mOnNext;
     }
 

@@ -5,8 +5,8 @@ import android.content.Context;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNext;
-import com.example.zhanghongqiang.databindingsample.subscribers.ProgressOnNextSubscriber;
-import com.example.zhanghongqiang.databindingsample.subscribers.SilentlyNextSubscriber;
+import com.example.zhanghongqiang.databindingsample.subscribers.ProgressSubscriber;
+import com.example.zhanghongqiang.databindingsample.subscribers.SilentlySubscriber;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -91,7 +91,7 @@ public class API {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
               .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
+                .subscribe(new ProgressSubscriber<T>(context, nextListener));
     }
 
     /**
@@ -105,7 +105,7 @@ public class API {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
+                .subscribe(new ProgressSubscriber<T>(context, nextListener));
     }
 
 
@@ -122,7 +122,7 @@ public class API {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressOnNextSubscriber<T>(context, nextListener));
+                .subscribe(new ProgressSubscriber<T>(context, nextListener));
 
     }
 
@@ -137,7 +137,7 @@ public class API {
         return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SilentlyNextSubscriber<T>(nextListener));
+                .subscribe(new SilentlySubscriber<T>(nextListener));
     }
 
 
