@@ -19,15 +19,17 @@ import java.util.List;
 
 /**
  * Created by zhanghongqiang on 16/7/20  上午11:18
- * ToDo:
+ * ToDo:列表代理者
  */
 public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
 
-
+    //暴露给外界的接口是实现者
     XRecyclerviewContract.IFListview F;
 
+    //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
     ViewRecyclerviewBinding mBinding;
 
+    //ViewRecyclerviewBinding里面的空布局
     ViewEmptyBinding mEmptyBinding ;
 
     //xml里面的列表
@@ -94,7 +96,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
     }
 
-    // loadingDialog
+    //加载成功的结果显示
     public void success(List<T> list) {
 
         //下拉刷新,多次请求首页的话,清空数据
