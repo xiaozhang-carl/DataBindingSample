@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-
-import com.example.zhanghongqiang.databindingsample.ui.BaseActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +14,12 @@ import java.util.List;
  * Created by zhanghongqiang on 16/3/1  下午4:58
  * ToDo:listView的代理者
  */
-public class ListViewPresenter<T> extends BasePresenter<IFListview> {
+public class ListViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
 
-    //含有listView的activity
-    private BaseActivity mActivity;
 
-    //ml里面的列表
+    XRecyclerviewContract.IFListview F;
+
+    //里面的列表
     private ListView listView;
 
     //没有数据将显示的提示
@@ -38,10 +35,10 @@ public class ListViewPresenter<T> extends BasePresenter<IFListview> {
     //万用的适配器
     private MyAdapter myAdapter;
 
-    public ListViewPresenter(BaseActivity activity, IFListview F) {
-        super(activity, F);
-    }
 
+    public ListViewPresenter(XRecyclerviewContract.IFListview F) {
+        this.F = F;
+    }
 
     public void reLoadData() {
         if (F != null) {
@@ -50,12 +47,11 @@ public class ListViewPresenter<T> extends BasePresenter<IFListview> {
     }
 
     /**
-     * @param activity
      * @param F
      * @return
      */
-    public static ListViewPresenter with(BaseActivity activity, IFListview F) {
-        return new ListViewPresenter(activity, F);
+    public static ListViewPresenter with(XRecyclerviewContract.IFListview F) {
+        return new ListViewPresenter(F);
     }
 
 
@@ -99,6 +95,12 @@ public class ListViewPresenter<T> extends BasePresenter<IFListview> {
 
 
     public void success(List<T> list) {
+        if (list == null || list.size() == 0) {
+            if (emptyView != null) {
+                emptyView.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
         myAdapter.clearList();
         myAdapter.addNewList(list);
     }
@@ -107,7 +109,7 @@ public class ListViewPresenter<T> extends BasePresenter<IFListview> {
         return myAdapter.dataList;
     }
 
-    public void setNotifyDataSetChanged() {
+    public void notifyDataSetChanged() {
         myAdapter.notifyDataSetChanged();
     }
 
@@ -134,11 +136,17 @@ public class ListViewPresenter<T> extends BasePresenter<IFListview> {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            return F.getViewType(position);
+        }
+
+
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = convertView;
             ViewDataBinding binding = null;
             if (view == null) {
-                binding = F.createView(parent, 0);
+                binding = F.createView(parent, position);
                 view = binding.getRoot();
                 view.setTag(binding);
             }

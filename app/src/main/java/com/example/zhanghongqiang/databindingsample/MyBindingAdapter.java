@@ -2,7 +2,6 @@ package com.example.zhanghongqiang.databindingsample;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data></data>
 
@@ -11,16 +11,12 @@
 
         <include
             layout="@layout/view_toolbar"
-            app:title="@{@string/test}" />
+            app:title="@{@string/test}"/>
 
 
-        <com.jcodecraeer.xrecyclerview.XRecyclerView
-            android:id="@+id/listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:clickable="false"
-            android:listSelector="@android:color/transparent"
-            android:scrollbars="none" />
+        <include
+            android:id="@+id/XRecyclerViewLayout"
+            layout="@layout/view_recyclerview"/>
+
     </LinearLayout>
 </layout>

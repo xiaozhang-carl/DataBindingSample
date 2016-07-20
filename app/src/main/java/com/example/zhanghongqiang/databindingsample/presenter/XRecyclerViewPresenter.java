@@ -9,7 +9,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.zhanghongqiang.databindingsample.ui.BaseActivity;
+import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
+import com.example.zhanghongqiang.databindingsample.databinding.ViewRecyclerviewBinding;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -17,18 +18,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zhanghongqiang on 16/3/1  下午4:58
- * ToDo:XRecyclerView的代理者
- * 加载动画http://blog.csdn.net/developer_jiangqq/article/details/49612399
+ * Created by zhanghongqiang on 16/7/20  上午11:18
+ * ToDo:
  */
-public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
+public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
 
+
+    XRecyclerviewContract.IFListview F;
+
+    ViewRecyclerviewBinding mBinding;
+
+    ViewEmptyBinding mEmptyBinding ;
 
     //xml里面的列表
     private XRecyclerView mRecyclerView;
 
-    //没有数据将显示的提示
-    private View emptyView;
+    //万用的适配器
+    private MyAdapter myAdapter;
 
     //头布局
     private View headerView;
@@ -42,9 +48,15 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
     //每一页的item个数,默认20条
     private int pageSize = 20;
 
+
     //下一页
     public int nextPage() {
         return ++page;
+    }
+
+
+    public int getPage() {
+        return page;
     }
 
     //获取数据列表
@@ -113,6 +125,7 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         } else {
             mRecyclerView.loadMoreComplete();
         }
+
     }
 
     public void clearData() {
@@ -121,33 +134,41 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         }
     }
 
-    //万用的适配器
-    private MyAdapter myAdapter;
-
-    /**
-     * @param activity
-     * @param F
-     */
-    private XRecyclerViewPresenter(BaseActivity activity, IFListview F) {
-        super(activity, F);
+    public XRecyclerViewPresenter(XRecyclerviewContract.IFListview listview){
+        this.F=listview;
     }
 
-
     /**
-     * @param activity
-     * @param F
      * @return
      */
-    public static XRecyclerViewPresenter with(BaseActivity activity, IFListview F) {
-        return new XRecyclerViewPresenter(activity, F);
+    public static XRecyclerViewPresenter with(XRecyclerviewContract.IFListview listview) {
+
+        return new XRecyclerViewPresenter(listview);
+    }
+    public XRecyclerViewPresenter recyclerView(@NonNull ViewRecyclerviewBinding binding) {
+        initVariable(binding);
+        linearLayoutManager();
+        setRefreshLoadMore();
+        setRefreshLoadingMoreProgressStyle();
+        return this;
+    }
+
+    private void initVariable(@NonNull ViewRecyclerviewBinding binding) {
+        mBinding = binding;
+        mRecyclerView = mBinding.recyclerview;
+        mEmptyBinding= mBinding.viewStub;
+    }
+
+
+    public ViewEmptyBinding getEmptyBinding() {
+        return mEmptyBinding;
     }
 
     /**
-     * @param recyclerView
-     * @param spanCount    网格布局的格数
+     * @param spanCount 网格布局的格数
      */
-    public XRecyclerViewPresenter recyclerView(@NonNull XRecyclerView recyclerView, int spanCount) {
-        mRecyclerView = recyclerView;
+    public XRecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount) {
+        initVariable(binding);
         gridLayoutManager(spanCount);
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
@@ -155,44 +176,29 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
     }
 
     /**
-     * @param recyclerView
-     * @param spanCount    交错网格的格子数
+     * @param spanCount   交错网格的格子数
      * @param orientation
      * @return
      */
-    public XRecyclerViewPresenter recyclerView(@NonNull XRecyclerView recyclerView, int spanCount, int orientation) {
-        mRecyclerView = recyclerView;
+    public XRecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount, int orientation) {
+        initVariable(binding);
         staggeredGridLayoutManager(spanCount, orientation);
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
         return this;
     }
 
-    /**
-     * @param recyclerView
-     */
-    public XRecyclerViewPresenter recyclerView(@NonNull XRecyclerView recyclerView) {
-        mRecyclerView = recyclerView;
-        linearLayoutManager();
-        setRefreshLoadMore();
-        setRefreshLoadingMoreProgressStyle();
-        return this;
-    }
 
     //加载动画http://blog.csdn.net/developer_jiangqq/article/details/49612399
     private void setRefreshLoadingMoreProgressStyle() {
         //头部加载小圆点,主题黄
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         //底部小方块
+        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.LineScaleParty);
     }
 
-    /**
-     * @param animator
-     */
-    public XRecyclerViewPresenter setItemAnimator(@NonNull RecyclerView.ItemAnimator animator) {
-        mRecyclerView.setItemAnimator(animator);
-        return this;
-    }
+
+
     /**
      * @param recycledViewPool
      */
@@ -200,7 +206,6 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         mRecyclerView.setRecycledViewPool(recycledViewPool);
         return this;
     }
-
 
 
     private void setRefreshLoadMore() {
@@ -212,8 +217,8 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
                 //页面设置为第一页
                 if (F != null) {
                     page = 0;
-                    if (emptyView != null) {
-                        emptyView.setVisibility(View.GONE);
+                    if (mEmptyBinding.getRoot() != null) {
+                        mEmptyBinding.getRoot().setVisibility(View.GONE);
                     }
                     F.loadData();
                 }
@@ -261,11 +266,6 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
 
-    public XRecyclerViewPresenter emptyView(@NonNull View emptyView) {
-        this.emptyView = emptyView;
-//        mRecyclerView.setEmptyView(emptyView);
-        return this;
-    }
 
     public XRecyclerViewPresenter headerView(@NonNull View headerView) {
         this.headerView = headerView;
@@ -277,12 +277,20 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         return this;
     }
 
+    public XRecyclerViewPresenter emptyTip(@NonNull String tip) {
+        if (mEmptyBinding!=null){
+            mEmptyBinding.setTip(tip);
+        }
+        return this;
+    }
+
+
     /**
      * @param pullRefresh 头部是否下拉
      * @param loadingMore 底部加载更多
      * @return
      */
-    public XRecyclerViewPresenter cancelRefresh(boolean pullRefresh, boolean loadingMore) {
+    public XRecyclerViewPresenter<T> cancelRefresh(boolean pullRefresh, boolean loadingMore) {
         if (mRecyclerView != null) {
             mRecyclerView.setPullRefreshEnabled(pullRefresh);
             mRecyclerView.setLoadingMoreEnabled(loadingMore);
@@ -290,7 +298,7 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
         return this;
     }
 
-    public XRecyclerViewPresenter build() {
+    public XRecyclerViewPresenter<T> build() {
         //添加头部
         if (this.headerView != null) {
             mRecyclerView.addHeaderView(headerView);
@@ -309,7 +317,7 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
     public void notifyDataSetChanged() {
         if (myAdapter != null) {
             //数据如果为空的话,现实占位图
-            if (emptyView != null && getDataList().size() == 0) {
+            if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
                 showEmptyView();
             }
             myAdapter.notifyDataSetChanged();
@@ -319,72 +327,44 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
     public void notifyItemRangeRemoved(int positionStart, int itemCount) {
         if (myAdapter != null) {
             //数据如果为空的话,现实占位图
-            if (emptyView != null && getDataList().size() == 0) {
+            if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
                 showEmptyView();
             }
             myAdapter.notifyItemRangeRemoved(positionStart, itemCount);
         }
     }
 
-    public void onError(Throwable e) {
-        mRecyclerView.refreshComplete();
-        mRecyclerView.loadMoreComplete();
-
-    }
-
-    public int getPage() {
-        return page;
-    }
-
 
     public void showEmptyView() {
-        if (emptyView != null) {
-            emptyView.setVisibility(View.VISIBLE);
+        if (mEmptyBinding.getRoot() != null) {
+            mEmptyBinding.getRoot().setVisibility(View.VISIBLE);
         }
     }
 
     private void hideEmptyView() {
-        if (emptyView != null) {
-            emptyView.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * RecyclerView万用的适配器,
-     */
-    class MyAdapterViewHolder extends XRecyclerView.ViewHolder {
-
-        T data;
-        ViewDataBinding binding;
-
-        public MyAdapterViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        public void setData(T data) {
-            this.data = data;
-            //调用接口的方法
-            F.updateView(data, binding, getAdapterPosition());
+        if (mEmptyBinding.getRoot() != null) {
+            mEmptyBinding.getRoot().setVisibility(View.GONE);
         }
     }
 
 
-    class MyAdapter extends XRecyclerView.Adapter<MyAdapterViewHolder> {
+    //适配器
+    class MyAdapter extends XRecyclerView.Adapter<XRecyclerViewPresenter.MyAdapterViewHolder> {
 
         ArrayList<T> dataList = new ArrayList<>();
 
         @Override
-        public MyAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public XRecyclerViewPresenter.MyAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             //调用借口的方法
             ViewDataBinding binding = F.createView(parent, viewType);
-            MyAdapterViewHolder viewHolder = new MyAdapterViewHolder(binding.getRoot());
+            XRecyclerViewPresenter.MyAdapterViewHolder viewHolder = new XRecyclerViewPresenter.MyAdapterViewHolder(binding.getRoot());
             viewHolder.binding = binding;
 
             return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(MyAdapterViewHolder holder, int position) {
+        public void onBindViewHolder(XRecyclerViewPresenter.MyAdapterViewHolder holder, int position) {
             holder.setData(getItem(position));
         }
 
@@ -415,5 +395,25 @@ public class XRecyclerViewPresenter<T> extends BasePresenter<IFListview> {
             }
         }
 
+    }
+
+    /**
+     * RecyclerView万用的适配器
+     */
+    class MyAdapterViewHolder extends XRecyclerView.ViewHolder {
+
+        T data;
+
+        ViewDataBinding binding;
+
+        public MyAdapterViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        public void setData(T data) {
+            this.data = data;
+            //调用接口的方法
+            F.updateView(data, binding, getAdapterPosition());
+        }
     }
 }

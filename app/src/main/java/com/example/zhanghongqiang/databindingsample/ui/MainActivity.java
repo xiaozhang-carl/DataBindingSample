@@ -6,17 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.api.API;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
+import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerViewPresenter;
+import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerviewContract;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
-import com.example.zhanghongqiang.databindingsample.presenter.IFListview;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/4/5  下午2:35
  * ToDo:
  */
-public class MainActivity extends BaseActivity implements IFListview<Movie> {
+public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFListview<Movie> {
 
     ActivityMainBinding binding;
     //布局填充器
@@ -37,11 +39,30 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         inflater = getLayoutInflater();
-        recyclerViewPresenter = XRecyclerViewPresenter.with(this, this)
-                .recyclerView(binding.listview)
+
+        recyclerViewPresenter = XRecyclerViewPresenter.with(this)
+                .recyclerView(binding.XRecyclerViewLayout)
+                .emptyTip("no  data")
                 .build();
+        //空布局
+        initEmptyView();
         //加载数据
         loadData();
+    }
+
+    private void initEmptyView() {
+        //获取空布局
+        ViewEmptyBinding emptyBinding = recyclerViewPresenter.getEmptyBinding();
+        //空布局的实现
+        if (emptyBinding != null) {
+            emptyBinding.button.setVisibility(View.VISIBLE);
+            emptyBinding.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recyclerViewPresenter.reLoadData();
+                }
+            });
+        }
     }
 
     @Override
@@ -62,6 +83,7 @@ public class MainActivity extends BaseActivity implements IFListview<Movie> {
             @Override
             public void notMatch(HttpResult<List<Movie>> listHttpResult) {
                 Log.i("123","result not match");
+
             }
 
 
