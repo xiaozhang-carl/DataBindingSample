@@ -1,6 +1,12 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
+import com.example.zhanghongqiang.databindingsample.MyApplacation;
+import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
+import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 
 import rx.Subscriber;
 
@@ -38,7 +44,14 @@ public class SilentlySubscriber<T> extends Subscriber<T> {
      */
     @Override
     public void onError(Throwable e) {
-
+        
+        if (e instanceof ConnectException) {
+            ToastUtil.show(MyApplacation.getInstance(), "网络中断，请检查您的网络状态");
+        } else if (e instanceof SocketTimeoutException) {
+            ToastUtil.show(MyApplacation.getInstance(), "网络中断，请检查您的网络状态");
+        } else {
+            ToastUtil.show(MyApplacation.getInstance(), MyApplacation.getInstance().getString(R.string.network_error));
+        }
     }
 
     /**
