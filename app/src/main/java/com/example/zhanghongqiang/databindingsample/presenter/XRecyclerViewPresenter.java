@@ -120,6 +120,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     }
 
 
+
     //刷新完成,隐藏进度条...
     public void refreshComplete() {
         if (page <= 1) {
@@ -326,13 +327,18 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
     }
 
-    public void notifyItemRangeRemoved(int positionStart, int itemCount) {
+    /**
+     *
+     * @param position 当前t在列表dataList的位置
+     */
+    public void notifyItemChanged(int position) {
         if (myAdapter != null) {
             //数据如果为空的话,现实占位图
-            if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
+            if (mEmptyBinding!= null && getDataList().size() == 0) {
                 showEmptyView();
             }
-            myAdapter.notifyItemRangeRemoved(positionStart, itemCount);
+            //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+            myAdapter.notifyItemRangeChanged(position+1,1);
         }
     }
 

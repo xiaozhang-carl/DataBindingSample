@@ -25,9 +25,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhanghongqiang on 16/3/31.
  */
-public class API {
+public class Api {
 
-    private static API apiInstance;
+    private static Api apiInstance;
     //地址
     public static final String BASE_URL = "https://api.douban.com/v2/movie/";
     //链接时长
@@ -37,16 +37,16 @@ public class API {
 
     private Rest rest;
 
-    public static API getInstance() {
+    public static Api getInstance() {
         if (apiInstance == null) {
-            synchronized (API.class) {
-                apiInstance = new API();
+            synchronized (Api.class) {
+                apiInstance = new Api();
             }
         }
         return apiInstance;
     }
 
-    private API() {
+    private Api() {
         //https://drakeet.me/retrofit-2-0-okhttp-3-0-config
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);

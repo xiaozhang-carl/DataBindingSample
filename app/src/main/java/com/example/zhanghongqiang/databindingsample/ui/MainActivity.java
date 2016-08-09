@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.R;
-import com.example.zhanghongqiang.databindingsample.api.API;
+import com.example.zhanghongqiang.databindingsample.api.Api;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
 
     @Override
     public void loadData() {
-        subscriptionArrayList.add(API.toSubscribe(this, API.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
+        subscriptionArrayList.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 
 
             @Override
@@ -94,10 +94,21 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
         }));
     }
 
+
+
+
     @Override
-    public void updateView(@NonNull Movie data, @NonNull ViewDataBinding binding, int position) {
+    public void updateView(@NonNull final Movie data, @NonNull ViewDataBinding binding, final int position) {
         ItemMovieBinding b = (ItemMovieBinding) binding;
         b.setMovie(data);
+
+        b.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.setTitle("xiaozhanghehe");
+                recyclerViewPresenter.notifyItemChanged(position-1);
+            }
+        });
 
     }
 
