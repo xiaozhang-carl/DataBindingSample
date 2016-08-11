@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ViewRecyclerviewBinding;
+import com.example.zhanghongqiang.databindingsample.view.FullyLinearLayoutManager;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -30,7 +31,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     ViewRecyclerviewBinding mBinding;
 
     //ViewRecyclerviewBinding里面的空布局
-    ViewEmptyBinding mEmptyBinding ;
+    ViewEmptyBinding mEmptyBinding;
 
     //xml里面的列表
     private XRecyclerView mRecyclerView;
@@ -120,7 +121,6 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     }
 
 
-
     //刷新完成,隐藏进度条...
     public void refreshComplete() {
         if (page <= 1) {
@@ -137,8 +137,8 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
     }
 
-    public XRecyclerViewPresenter(XRecyclerviewContract.IFListview listview){
-        this.F=listview;
+    public XRecyclerViewPresenter(XRecyclerviewContract.IFListview listview) {
+        this.F = listview;
     }
 
     /**
@@ -148,6 +148,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
 
         return new XRecyclerViewPresenter(listview);
     }
+
     public XRecyclerViewPresenter recyclerView(@NonNull ViewRecyclerviewBinding binding) {
         initVariable(binding);
         linearLayoutManager();
@@ -156,10 +157,27 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         return this;
     }
 
+
+    public XRecyclerViewPresenter fullRecyclerView(ViewRecyclerviewBinding binding) {
+        initVariable(binding);
+        fullLinearLayoutManager();
+        setRefreshLoadMore();
+        setRefreshLoadingMoreProgressStyle();
+        return this;
+    }
+
+    private void fullLinearLayoutManager() {
+        //默认的layoutManager
+        FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(mRecyclerView.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        //设置layoutManager
+        mRecyclerView.setLayoutManager(layoutManager);
+    }
+
     private void initVariable(@NonNull ViewRecyclerviewBinding binding) {
         mBinding = binding;
         mRecyclerView = mBinding.recyclerview;
-        mEmptyBinding= mBinding.viewStub;
+        mEmptyBinding = mBinding.viewStub;
     }
 
 
@@ -199,7 +217,6 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         //底部小方块
         mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.LineScaleParty);
     }
-
 
 
     /**
@@ -281,7 +298,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     }
 
     public XRecyclerViewPresenter emptyTip(@NonNull String tip) {
-        if (mEmptyBinding!=null){
+        if (mEmptyBinding != null) {
             mEmptyBinding.setTip(tip);
         }
         return this;
@@ -328,17 +345,12 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     }
 
     /**
-     *
      * @param position 当前t在列表dataList的位置
      */
     public void notifyItemChanged(int position) {
         if (myAdapter != null) {
-            //数据如果为空的话,现实占位图
-            if (mEmptyBinding!= null && getDataList().size() == 0) {
-                showEmptyView();
-            }
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            myAdapter.notifyItemRangeChanged(position+1,1);
+            myAdapter.notifyItemRangeChanged(position + 1, 1);
         }
     }
 
