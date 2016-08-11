@@ -10,13 +10,16 @@ import android.view.ViewGroup;
  */
 public interface XRecyclerviewContract {
 
+    //加载数据
+    interface IFLoadData {
+        void loadData();
+    }
+
+    //适配器使用
     interface IFListview<T> {
 
         //可以根据数据类型来显示不同的item
         int getViewType(int position);
-
-        //加载数据
-        void loadData();
 
         //显示数据
         void updateView(@NonNull T data, @NonNull ViewDataBinding binding, int position);
@@ -25,7 +28,7 @@ public interface XRecyclerviewContract {
         ViewDataBinding createView(ViewGroup parent, int position);
     }
 
-    //
+    //代理者
     interface XRDelegate {
 
     }

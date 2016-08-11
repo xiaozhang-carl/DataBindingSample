@@ -17,7 +17,10 @@ import java.util.List;
 public class ListViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
 
 
+    //暴露给外界的接口是实现者
     XRecyclerviewContract.IFListview F;
+
+    XRecyclerviewContract.IFLoadData L;
 
     //里面的列表
     private ListView listView;
@@ -36,13 +39,14 @@ public class ListViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
     private MyAdapter myAdapter;
 
 
-    public ListViewPresenter(XRecyclerviewContract.IFListview F) {
+    public ListViewPresenter(XRecyclerviewContract.IFLoadData L, XRecyclerviewContract.IFListview F) {
         this.F = F;
+        this.L = L;
     }
 
     public void reLoadData() {
         if (F != null) {
-            F.loadData();
+            L.loadData();
         }
     }
 
@@ -50,8 +54,9 @@ public class ListViewPresenter<T> implements XRecyclerviewContract.XRDelegate {
      * @param F
      * @return
      */
-    public static ListViewPresenter with(XRecyclerviewContract.IFListview F) {
-        return new ListViewPresenter(F);
+    public static ListViewPresenter with(XRecyclerviewContract.IFLoadData L, XRecyclerviewContract.IFListview F) {
+
+        return new ListViewPresenter(L, F);
     }
 
 

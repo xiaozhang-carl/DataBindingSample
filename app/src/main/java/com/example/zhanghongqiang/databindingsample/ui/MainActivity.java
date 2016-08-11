@@ -26,7 +26,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/4/5  下午2:35
  * ToDo:
  */
-public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFListview<Movie> {
+public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFLoadData ,XRecyclerviewContract.IFListview<Movie> {
 
     ActivityMainBinding binding;
     //布局填充器
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         inflater = getLayoutInflater();
 
-        recyclerViewPresenter = XRecyclerViewPresenter.with(this)
+        recyclerViewPresenter = XRecyclerViewPresenter.with(this,this)
                 .recyclerView(binding.XRecyclerViewLayout)
                 .emptyTip("no  data")
                 .build();

@@ -27,6 +27,8 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     //暴露给外界的接口是实现者
     XRecyclerviewContract.IFListview F;
 
+    XRecyclerviewContract.IFLoadData L;
+
     //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
     ViewRecyclerviewBinding mBinding;
 
@@ -85,7 +87,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     //这是为了加loadingDialog
     public void loadData() {
         if (F != null) {
-            F.loadData();
+            L.loadData();
         }
     }
 
@@ -93,7 +95,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     public void reLoadData() {
         if (F != null) {
             page = 0;
-            F.loadData();
+            L.loadData();
         }
     }
 
@@ -137,16 +139,17 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
     }
 
-    public XRecyclerViewPresenter(XRecyclerviewContract.IFListview listview) {
-        this.F = listview;
+    public XRecyclerViewPresenter(XRecyclerviewContract.IFLoadData L, XRecyclerviewContract.IFListview F) {
+        this.F = F;
+        this.L = L;
     }
 
     /**
      * @return
      */
-    public static XRecyclerViewPresenter with(XRecyclerviewContract.IFListview listview) {
+    public static XRecyclerViewPresenter with(XRecyclerviewContract.IFLoadData L, XRecyclerviewContract.IFListview F) {
 
-        return new XRecyclerViewPresenter(listview);
+        return new XRecyclerViewPresenter(L, F);
     }
 
     public XRecyclerViewPresenter recyclerView(@NonNull ViewRecyclerviewBinding binding) {
@@ -240,7 +243,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
                     if (mEmptyBinding.getRoot() != null) {
                         mEmptyBinding.getRoot().setVisibility(View.GONE);
                     }
-                    F.loadData();
+                    L.loadData();
                 }
             }
 
@@ -248,7 +251,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
             public void onLoadMore() {
                 if (F != null) {
                     //加载更多
-                    F.loadData();
+                    L.loadData();
                 }
             }
         });
