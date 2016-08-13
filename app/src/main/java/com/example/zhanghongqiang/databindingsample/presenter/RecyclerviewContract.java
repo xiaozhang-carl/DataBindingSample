@@ -8,7 +8,7 @@ import android.view.ViewGroup;
  * Created by zhanghongqiang on 16/7/20  上午10:49
  * ToDo:列表的契约者,用来管理mvvp里的v
  */
-public interface XRecyclerviewContract {
+public interface RecyclerviewContract {
 
     //加载数据
     interface IFLoadData {
@@ -30,8 +30,6 @@ public interface XRecyclerviewContract {
 
     //代理者
     interface XRDelegate {
-
-
-
+        void reLoadData();
     }
 }

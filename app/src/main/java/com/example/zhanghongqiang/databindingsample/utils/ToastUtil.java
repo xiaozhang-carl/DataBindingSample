@@ -23,7 +23,6 @@ public class ToastUtil {
         if (TextUtils.isEmpty(message)) {
             return;
         }
-        //授权证书de的返回是message,不需要吐司
         if (message.startsWith("htt")) {
             return;
         }

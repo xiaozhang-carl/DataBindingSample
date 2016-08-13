@@ -17,7 +17,7 @@ import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerViewPresenter;
-import com.example.zhanghongqiang.databindingsample.presenter.XRecyclerviewContract;
+import com.example.zhanghongqiang.databindingsample.presenter.RecyclerviewContract;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/4/5  下午2:35
  * ToDo:
  */
-public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFLoadData, XRecyclerviewContract.IFListview<Movie> {
+public class MainActivity extends BaseActivity implements RecyclerviewContract.IFLoadData, RecyclerviewContract.IFListview<Movie> {
 
     ActivityMainBinding binding;
     //布局填充器
