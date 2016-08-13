@@ -1,32 +1,25 @@
 package com.example.zhanghongqiang.databindingsample.presenter;
 
-import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
 import com.example.zhanghongqiang.databindingsample.databinding.ViewRecyclerviewBinding;
 import com.example.zhanghongqiang.databindingsample.view.FullyLinearLayoutManager;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zhanghongqiang on 16/7/20  上午11:18
  * ToDo:列表代理者
  */
-public class RecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegate {
+public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
 
-    //暴露给外界的接口是实现者
-    RecyclerviewContract.IFListview F;
 
-    RecyclerviewContract.IFLoadData L;
 
     //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
     ViewRecyclerviewBinding mBinding;
@@ -90,8 +83,7 @@ public class RecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegate
     }
 
     public RecyclerViewPresenter(RecyclerviewContract.IFLoadData L, RecyclerviewContract.IFListview F) {
-        this.F = F;
-        this.L = L;
+        super(L,F);
     }
 
     /**
@@ -250,71 +242,4 @@ public class RecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegate
         }
     }
 
-
-    //适配器
-    class MyAdapter extends XRecyclerView.Adapter<RecyclerViewPresenter.MyAdapterViewHolder> {
-
-        ArrayList<T> mDatas = new ArrayList<>();
-
-        @Override
-        public RecyclerViewPresenter.MyAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            //调用借口的方法
-            ViewDataBinding binding = F.createView(parent, viewType);
-            RecyclerViewPresenter.MyAdapterViewHolder viewHolder = new RecyclerViewPresenter.MyAdapterViewHolder(binding.getRoot());
-            viewHolder.mViewDataBinding = binding;
-
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerViewPresenter.MyAdapterViewHolder holder, int position) {
-            holder.setData(getItem(position));
-        }
-
-        private T getItem(int position) {
-            return mDatas.get(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDatas != null ? mDatas.size() : 0;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            //调用接口的方法
-            return F.getViewType(position);
-        }
-
-        public void clearList() {
-            mDatas.clear();
-            notifyDataSetChanged();
-        }
-
-        public void addNewList(List<T> list) {
-            if (list != null && list.size() > 0) {
-                mDatas.addAll(list);
-                notifyDataSetChanged();
-            }
-        }
-
-    }
-
-    /**
-     * RecyclerView万用的适配器
-     */
-    class MyAdapterViewHolder extends XRecyclerView.ViewHolder {
-
-
-        ViewDataBinding mViewDataBinding;
-
-        public MyAdapterViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        public void setData(T data) {
-            //调用接口的方法
-            F.updateView(data, mViewDataBinding);
-        }
-    }
 }

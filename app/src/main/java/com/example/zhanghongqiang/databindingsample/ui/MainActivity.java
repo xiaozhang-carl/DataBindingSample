@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity implements RecyclerviewContract.I
     @Override
     public void loadData() {
         subscriptionArrayList.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
-                500
+                recyclerViewPresenter.nextPage()
                 , recyclerViewPresenter.getCount())
                 , new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 

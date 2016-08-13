@@ -2,7 +2,13 @@ package com.example.zhanghongqiang.databindingsample.presenter;
 
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.view.ViewGroup;
+
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhanghongqiang on 16/7/20  上午10:49
@@ -29,16 +35,95 @@ public interface RecyclerviewContract {
     }
 
     //代理者
-    interface XRDelegate<T>{
+    abstract class XRDelegate<T> {
+
+        public XRDelegate(IFLoadData l, IFListview f) {
+            F = f;
+            L = l;
+        }
+
+        //暴露给外界的接口是实现者
+        RecyclerviewContract.IFListview F = null;
+
+        RecyclerviewContract.IFLoadData L = null;
 
 
-        void reLoadData();
+        abstract void reLoadData();
 
-        void notifyDataSetChanged();
+        abstract void notifyDataSetChanged();
 
-        void notifyItemChanged(int position);
+        abstract void notifyItemChanged(int position);
 
-        void notifyItemRangeRemoved(int position);
+        abstract void notifyItemRangeRemoved(int position);
+
+
+        //适配器
+        class MyAdapter<T> extends XRecyclerView.Adapter<MyAdapterViewHolder<T>> {
+
+            ArrayList<T> mDatas = new ArrayList<>();
+
+            @Override
+            public MyAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                //调用借口的方法
+                ViewDataBinding binding = F.createView(parent, viewType);
+                MyAdapterViewHolder viewHolder = new MyAdapterViewHolder(binding.getRoot());
+                viewHolder.mViewDataBinding = binding;
+
+                return viewHolder;
+            }
+
+            @Override
+            public void onBindViewHolder(MyAdapterViewHolder holder, int position) {
+                holder.setData(getItem(position));
+            }
+
+            private T getItem(int position) {
+                return mDatas.get(position);
+            }
+
+            @Override
+            public int getItemCount() {
+                return mDatas != null ? mDatas.size() : 0;
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                //调用接口的方法
+                return F.getViewType(position);
+            }
+
+            public void clearList() {
+                mDatas.clear();
+                notifyDataSetChanged();
+            }
+
+            public void addNewList(List<T> list) {
+                if (list != null && list.size() > 0) {
+                    mDatas.addAll(list);
+                    notifyDataSetChanged();
+                }
+            }
+
+
+        }
+
+        /**
+         * RecyclerView万用的适配器
+         */
+        class MyAdapterViewHolder<T> extends XRecyclerView.ViewHolder {
+
+
+            ViewDataBinding mViewDataBinding;
+
+            public MyAdapterViewHolder(View itemView) {
+                super(itemView);
+            }
+
+            public void setData(T data) {
+                //调用接口的方法
+                F.updateView(data, mViewDataBinding);
+            }
+        }
 
     }
 }
