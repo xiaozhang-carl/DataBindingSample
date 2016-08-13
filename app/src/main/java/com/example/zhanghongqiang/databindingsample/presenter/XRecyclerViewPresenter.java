@@ -331,6 +331,7 @@ public class XRecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegat
         return this;
     }
 
+    @Override
     public void notifyDataSetChanged() {
         if (mAdapter != null) {
             //数据如果为空的话,现实占位图
@@ -344,6 +345,7 @@ public class XRecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegat
     /**
      * @param position 当前t在列表dataList的位置
      */
+    @Override
     public void notifyItemChanged(int position) {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
@@ -354,6 +356,7 @@ public class XRecyclerViewPresenter<T> implements RecyclerviewContract.XRDelegat
     /**
      * @param position 当前t在列表dataList的位置
      */
+    @Override
     public void notifyItemRangeRemoved(int position) {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1

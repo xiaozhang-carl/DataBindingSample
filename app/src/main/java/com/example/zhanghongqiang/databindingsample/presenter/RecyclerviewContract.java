@@ -29,7 +29,16 @@ public interface RecyclerviewContract {
     }
 
     //代理者
-    interface XRDelegate {
+    interface XRDelegate<T>{
+
+
         void reLoadData();
+
+        void notifyDataSetChanged();
+
+        void notifyItemChanged(int position);
+
+        void notifyItemRangeRemoved(int position);
+
     }
 }
