@@ -2,21 +2,39 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data></data>
+    <data>
+
+        <variable
+            name="click"
+            type="com.example.zhanghongqiang.databindingsample.ui.MainActivity"/>
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/view_toolbar"
-            app:title="@{@string/test}"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{click::test1}"
+            android:text="RecyclerviewActivity"
+            android:textAllCaps="false"
+            android:textStyle="italic"/>
 
-
-        <include
-            android:id="@+id/XRecyclerViewLayout"
-            layout="@layout/view_recyclerview"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{click::test2}"
+            android:text="XRecyclerviewActivity"
+            android:textAllCaps="false"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{click::test3}"
+            android:text="NestRecyclerviewActivity"
+            android:textAllCaps="false"/>
 
     </LinearLayout>
 </layout>

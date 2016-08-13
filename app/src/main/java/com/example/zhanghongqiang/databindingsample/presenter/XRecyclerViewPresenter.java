@@ -18,7 +18,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/7/20  上午11:18
  * ToDo:列表代理者
  */
-public class XRecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
+public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
 
     //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
@@ -133,14 +133,14 @@ public class XRecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
         }
     }
 
-    public XRecyclerViewPresenter(RecyclerviewContract.IFLoadData L, RecyclerviewContract.IFListview F) {
+    public XRecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
         super(L, F);
     }
 
     /**
      * @return
      */
-    public static XRecyclerViewPresenter with(RecyclerviewContract.IFLoadData L, RecyclerviewContract.IFListview F) {
+    public static XRecyclerViewPresenter with(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
         return new XRecyclerViewPresenter(L, F);
     }
 

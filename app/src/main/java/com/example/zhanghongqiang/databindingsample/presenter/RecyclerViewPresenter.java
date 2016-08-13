@@ -1,14 +1,10 @@
 package com.example.zhanghongqiang.databindingsample.presenter;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
-import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
-import com.example.zhanghongqiang.databindingsample.databinding.ViewRecyclerviewBinding;
 import com.example.zhanghongqiang.databindingsample.view.FullyLinearLayoutManager;
 
 import java.util.List;
@@ -17,15 +13,8 @@ import java.util.List;
  * Created by zhanghongqiang on 16/7/20  上午11:18
  * ToDo:列表代理者
  */
-public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
+public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
-
-
-    //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
-    ViewRecyclerviewBinding mBinding;
-
-    //ViewRecyclerviewBinding里面的空布局
-    ViewEmptyBinding mEmptyBinding;
 
     //xml里面的列表
     private RecyclerView mRecyclerView;
@@ -50,7 +39,6 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
 
         //没有数据,显示空数据
         if (list.size() == 0) {
-            showEmptyView();
             mAdapter.clearList();
             return;
         } else {
@@ -58,8 +46,6 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
             mAdapter.clearList();
 
         }
-        //隐藏占位图
-        hideEmptyView();
         //加入新的数据
         mAdapter.addNewList(list);
 
@@ -82,26 +68,26 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
         }
     }
 
-    public RecyclerViewPresenter(RecyclerviewContract.IFLoadData L, RecyclerviewContract.IFListview F) {
+    public RecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
         super(L,F);
     }
 
     /**
      * @return
      */
-    public static RecyclerViewPresenter with(RecyclerviewContract.IFLoadData L, RecyclerviewContract.IFListview F) {
+    public static RecyclerViewPresenter with(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
         return new RecyclerViewPresenter(L, F);
     }
 
-    public RecyclerViewPresenter recyclerView(@NonNull ViewRecyclerviewBinding binding) {
-        initVariable(binding);
+    public RecyclerViewPresenter recyclerView(RecyclerView recyclerView) {
+        this.mRecyclerView=recyclerView;
         linearLayoutManager();
         return this;
     }
 
 
-    public RecyclerViewPresenter fullRecyclerView(ViewRecyclerviewBinding binding) {
-        initVariable(binding);
+    public RecyclerViewPresenter fullRecyclerView( RecyclerView recyclerView) {
+        this.mRecyclerView=recyclerView;
         fullLinearLayoutManager();
         return this;
     }
@@ -114,22 +100,14 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
         mRecyclerView.setLayoutManager(layoutManager);
     }
 
-    private void initVariable(@NonNull ViewRecyclerviewBinding binding) {
-        mBinding = binding;
-        mRecyclerView = mBinding.recyclerview;
-        mEmptyBinding = mBinding.viewStub;
-    }
 
 
-    public ViewEmptyBinding getEmptyBinding() {
-        return mEmptyBinding;
-    }
 
     /**
      * @param spanCount 网格布局的格数
      */
-    public RecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount) {
-        initVariable(binding);
+    public RecyclerViewPresenter<T> recyclerView(RecyclerView recyclerView, int spanCount) {
+        this.mRecyclerView=recyclerView;
         gridLayoutManager(spanCount);
         return this;
     }
@@ -139,8 +117,8 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
      * @param orientation
      * @return
      */
-    public RecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount, int orientation) {
-        initVariable(binding);
+    public RecyclerViewPresenter<T> recyclerView(RecyclerView recyclerView, int spanCount, int orientation) {
+        this.mRecyclerView=recyclerView;
         staggeredGridLayoutManager(spanCount, orientation);
         return this;
     }
@@ -179,13 +157,6 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
     }
 
 
-    public RecyclerViewPresenter emptyTip(@NonNull String tip) {
-        if (mEmptyBinding != null) {
-            mEmptyBinding.setTip(tip);
-        }
-        return this;
-    }
-
 
     public RecyclerViewPresenter<T> build() {
 
@@ -199,10 +170,7 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
     @Override
     public void notifyDataSetChanged() {
         if (mAdapter != null) {
-            //数据如果为空的话,现实占位图
-            if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
-                showEmptyView();
-            }
+            //数据如果为空的话
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -214,7 +182,7 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
     public void notifyItemChanged(int position) {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            mAdapter.notifyItemRangeChanged(position + 1, 1);
+            mAdapter.notifyItemRangeChanged(position, 1);
         }
     }
 
@@ -225,20 +193,7 @@ public class RecyclerViewPresenter<T> extends RecyclerviewContract.XRDelegate {
     public void notifyItemRangeRemoved(int position) {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            mAdapter.notifyItemRangeRemoved(position + 1, 1);
-        }
-    }
-
-
-    public void showEmptyView() {
-        if (mEmptyBinding.getRoot() != null) {
-            mEmptyBinding.getRoot().setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (mEmptyBinding.getRoot() != null) {
-            mEmptyBinding.getRoot().setVisibility(View.GONE);
+            mAdapter.notifyItemRangeRemoved(position, 1);
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/7/20  上午10:49
  * ToDo:列表的契约者,用来管理mvvp里的v
  */
-public interface RecyclerviewContract {
+public interface RecyclerViewContract {
 
     //加载数据
     interface IFLoadData {
@@ -43,9 +43,9 @@ public interface RecyclerviewContract {
         }
 
         //暴露给外界的接口是实现者
-        RecyclerviewContract.IFListview F = null;
+        RecyclerViewContract.IFListview F = null;
 
-        RecyclerviewContract.IFLoadData L = null;
+        RecyclerViewContract.IFLoadData L = null;
 
 
         abstract void reLoadData();
