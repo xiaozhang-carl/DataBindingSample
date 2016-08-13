@@ -26,7 +26,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/4/5  下午2:35
  * ToDo:
  */
-public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFLoadData ,XRecyclerviewContract.IFListview<Movie> {
+public class MainActivity extends BaseActivity implements XRecyclerviewContract.IFLoadData, XRecyclerviewContract.IFListview<Movie> {
 
     ActivityMainBinding binding;
     //布局填充器
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         inflater = getLayoutInflater();
 
-        recyclerViewPresenter = XRecyclerViewPresenter.with(this,this)
+        recyclerViewPresenter = XRecyclerViewPresenter.with(this, this)
                 .recyclerView(binding.XRecyclerViewLayout)
                 .emptyTip("no  data")
                 .build();
@@ -72,33 +72,34 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
 
     @Override
     public void loadData() {
-        subscriptionArrayList.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(recyclerViewPresenter.nextPage(), recyclerViewPresenter.getPageSize()), new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
+        subscriptionArrayList.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
+                500
+                , recyclerViewPresenter.getCount())
+                , new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 
 
-            @Override
-            public void onNext(HttpResult<List<Movie>> listHttpResult) {
-                recyclerViewPresenter.success(listHttpResult.getSubjects());
-            }
+                    @Override
+                    public void onNext(HttpResult<List<Movie>> listHttpResult) {
+                        recyclerViewPresenter.success(listHttpResult.getSubjects());
+                    }
 
-            @Override
-            public void notMatch(HttpResult<List<Movie>> listHttpResult) {
-                Log.i("123","result not match");
+                    @Override
+                    public void notMatch(HttpResult<List<Movie>> listHttpResult) {
+                        Log.i("123", "result not match");
 
-            }
+                    }
 
 
-            @Override
-            public void onError(Throwable e) {
-                recyclerViewPresenter.refreshComplete();
-            }
-        }));
+                    @Override
+                    public void onError(Throwable e) {
+                        recyclerViewPresenter.refreshComplete();
+                    }
+                }));
     }
 
 
-
-
     @Override
-    public void updateView(@NonNull final Movie data, @NonNull ViewDataBinding binding, final int position) {
+    public void updateView(@NonNull final Movie data, @NonNull ViewDataBinding binding) {
         ItemMovieBinding b = (ItemMovieBinding) binding;
         b.setMovie(data);
 
@@ -106,7 +107,10 @@ public class MainActivity extends BaseActivity implements XRecyclerviewContract.
             @Override
             public void onClick(View v) {
                 data.setTitle("xiaozhanghehe");
-                recyclerViewPresenter.notifyItemChanged(position-1);
+//                recyclerViewPresenter.notifyItemChanged(position);
+                int position = recyclerViewPresenter.indexOf(data);
+                recyclerViewPresenter.getDataList().remove(position);
+                recyclerViewPresenter.notifyItemRangeRemoved(position);
             }
         });
 

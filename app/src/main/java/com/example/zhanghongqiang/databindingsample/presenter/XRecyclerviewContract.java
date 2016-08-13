@@ -22,7 +22,7 @@ public interface XRecyclerviewContract {
         int getViewType(int position);
 
         //显示数据
-        void updateView(@NonNull T data, @NonNull ViewDataBinding binding, int position);
+        void updateView(@NonNull T data, @NonNull ViewDataBinding binding);
 
         //这里的使用一定要注意,用第二个参数来判断
         ViewDataBinding createView(ViewGroup parent, int position);
@@ -30,6 +30,8 @@ public interface XRecyclerviewContract {
 
     //代理者
     interface XRDelegate {
+
+
 
     }
 }

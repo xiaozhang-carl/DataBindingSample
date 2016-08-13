@@ -4,7 +4,6 @@ import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,62 +38,62 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     private XRecyclerView mRecyclerView;
 
     //万用的适配器
-    private MyAdapter myAdapter;
+    private MyAdapter mAdapter;
 
     //头布局
-    private View headerView;
+    private View mHeaderView;
 
     //底部布局
-    private View footerView;
+    private View mFooterView;
 
     //分页,从0开始
-    private int page = 0;
+    private int mPage = 0;
 
     //每一页的item个数,默认20条
-    private int pageSize = 20;
+    private int mCount = 5;
 
 
-    //下一页
+    //下一页,获取数据的时候调用
     public int nextPage() {
-        return ++page;
+        return ++mPage;
     }
 
 
     public int getPage() {
-        return page;
+        return mPage;
     }
+
+
 
     //获取数据列表
     public List<T> getDataList() {
-        return myAdapter.dataList;
+        return mAdapter.mDatas;
     }
 
-    //返回每页的条目
-    public int getPageSize() {
-        return pageSize;
+    public int indexOf(T t) {
+        return getDataList().indexOf(t);
     }
 
-    //设置每页的条目
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    //返回每页的条数
+    public int getCount() {
+        return mCount;
+    }
+
+    //设置每页的条数
+    public void setCount(int count) {
+        this.mCount = count;
     }
 
     //设置页码,配合分页使用
-    public void setPage(int page) {
-        this.page = page;
+    public void setPage(int mPage) {
+        this.mPage = mPage;
     }
 
-    //这是为了加loadingDialog
-    public void loadData() {
-        if (F != null) {
-            L.loadData();
-        }
-    }
 
-    //加载新的数据
+    //重新加载数据
     public void reLoadData() {
-        if (F != null) {
-            page = 0;
+        if (L != null) {
+            mPage = 0;
             L.loadData();
         }
     }
@@ -103,29 +102,31 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     public void success(List<T> list) {
 
         //下拉刷新,多次请求首页的话,清空数据
-        if (page == 1 || page == 0) {
+        if (mPage == 1 || mPage == 0) {
             //第一页就没有数据,显示空数据
             if (list.size() == 0) {
                 showEmptyView();
-                myAdapter.clearList();
+                mAdapter.clearList();
+                //刷新完成,隐藏进度条...
                 refreshComplete();
                 return;
             } else {
                 //有数据的话,清空原来的数据,防止数据重复添加
-                myAdapter.clearList();
+                mAdapter.clearList();
             }
         }
         //隐藏占位图
         hideEmptyView();
         //加入新的数据
-        myAdapter.addNewList(list);
+        mAdapter.addNewList(list);
+        //刷新完成,隐藏进度条...
         refreshComplete();
     }
 
 
     //刷新完成,隐藏进度条...
     public void refreshComplete() {
-        if (page <= 1) {
+        if (mPage <= 1) {
             mRecyclerView.refreshComplete();
         } else {
             mRecyclerView.loadMoreComplete();
@@ -134,8 +135,8 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     }
 
     public void clearData() {
-        if (myAdapter != null) {
-            myAdapter.clearList();
+        if (mAdapter != null) {
+            mAdapter.clearList();
         }
     }
 
@@ -148,7 +149,6 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
      * @return
      */
     public static XRecyclerViewPresenter with(XRecyclerviewContract.IFLoadData L, XRecyclerviewContract.IFListview F) {
-
         return new XRecyclerViewPresenter(L, F);
     }
 
@@ -221,14 +221,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.LineScaleParty);
     }
 
-
-    /**
-     * @param recycledViewPool
-     */
-    public XRecyclerViewPresenter setRecycledViewPool(@NonNull RecyclerView.RecycledViewPool recycledViewPool) {
-        mRecyclerView.setRecycledViewPool(recycledViewPool);
-        return this;
-    }
+    
 
 
     private void setRefreshLoadMore() {
@@ -238,8 +231,8 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
             public void onRefresh() {
                 //下拉刷新,刷新成功后,清空原有数据
                 //页面设置为第一页
-                if (F != null) {
-                    page = 0;
+                if (L != null) {
+                    mPage = 0;
                     if (mEmptyBinding.getRoot() != null) {
                         mEmptyBinding.getRoot().setVisibility(View.GONE);
                     }
@@ -249,7 +242,7 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
 
             @Override
             public void onLoadMore() {
-                if (F != null) {
+                if (L != null) {
                     //加载更多
                     L.loadData();
                 }
@@ -291,12 +284,12 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
 
 
     public XRecyclerViewPresenter headerView(@NonNull View headerView) {
-        this.headerView = headerView;
+        this.mHeaderView = headerView;
         return this;
     }
 
     public XRecyclerViewPresenter footerView(@NonNull View footerView) {
-        this.footerView = footerView;
+        this.mFooterView = footerView;
         return this;
     }
 
@@ -323,27 +316,27 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
 
     public XRecyclerViewPresenter<T> build() {
         //添加头部
-        if (this.headerView != null) {
-            mRecyclerView.addHeaderView(headerView);
+        if (this.mHeaderView != null) {
+            mRecyclerView.addHeaderView(mHeaderView);
         }
         //添加尾部
-        if (this.footerView != null) {
-            mRecyclerView.addFootView(footerView);
+        if (this.mFooterView != null) {
+            mRecyclerView.addFootView(mFooterView);
         }
         //新建适配器
-        myAdapter = new MyAdapter();
+        mAdapter = new MyAdapter();
         //设置适配器
-        mRecyclerView.setAdapter(myAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         return this;
     }
 
     public void notifyDataSetChanged() {
-        if (myAdapter != null) {
+        if (mAdapter != null) {
             //数据如果为空的话,现实占位图
             if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
                 showEmptyView();
             }
-            myAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -351,9 +344,19 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
      * @param position 当前t在列表dataList的位置
      */
     public void notifyItemChanged(int position) {
-        if (myAdapter != null) {
+        if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            myAdapter.notifyItemRangeChanged(position + 1, 1);
+            mAdapter.notifyItemRangeChanged(position + 1, 1);
+        }
+    }
+
+    /**
+     * @param position 当前t在列表dataList的位置
+     */
+    public void notifyItemRangeRemoved(int position) {
+        if (mAdapter != null) {
+            //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+            mAdapter.notifyItemRangeRemoved(position + 1, 1);
         }
     }
 
@@ -374,14 +377,14 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
     //适配器
     class MyAdapter extends XRecyclerView.Adapter<XRecyclerViewPresenter.MyAdapterViewHolder> {
 
-        ArrayList<T> dataList = new ArrayList<>();
+        ArrayList<T> mDatas = new ArrayList<>();
 
         @Override
         public XRecyclerViewPresenter.MyAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             //调用借口的方法
             ViewDataBinding binding = F.createView(parent, viewType);
             XRecyclerViewPresenter.MyAdapterViewHolder viewHolder = new XRecyclerViewPresenter.MyAdapterViewHolder(binding.getRoot());
-            viewHolder.binding = binding;
+            viewHolder.mViewDataBinding = binding;
 
             return viewHolder;
         }
@@ -392,12 +395,12 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
 
         private T getItem(int position) {
-            return dataList.get(position);
+            return mDatas.get(position);
         }
 
         @Override
         public int getItemCount() {
-            return dataList.size();
+            return mDatas!=null?mDatas.size():0;
         }
 
         @Override
@@ -407,13 +410,13 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
         }
 
         public void clearList() {
-            dataList.clear();
+            mDatas.clear();
             notifyDataSetChanged();
         }
 
         public void addNewList(List<T> list) {
             if (list != null && list.size() > 0) {
-                dataList.addAll(list);
+                mDatas.addAll(list);
                 notifyDataSetChanged();
             }
         }
@@ -425,18 +428,16 @@ public class XRecyclerViewPresenter<T> implements XRecyclerviewContract.XRDelega
      */
     class MyAdapterViewHolder extends XRecyclerView.ViewHolder {
 
-        T data;
 
-        ViewDataBinding binding;
+        ViewDataBinding mViewDataBinding;
 
         public MyAdapterViewHolder(View itemView) {
             super(itemView);
         }
 
         public void setData(T data) {
-            this.data = data;
             //调用接口的方法
-            F.updateView(data, binding, getAdapterPosition());
+            F.updateView(data, mViewDataBinding);
         }
     }
 }
