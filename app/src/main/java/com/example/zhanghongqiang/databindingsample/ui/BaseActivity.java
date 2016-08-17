@@ -8,17 +8,15 @@ import android.view.View;
 
 import com.example.zhanghongqiang.databindingsample.R;
 
-import java.util.ArrayList;
-
-import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     //标题返回按钮
     View view;
 
-    //用于存放网络请求等的Subscription,便于activity在onDestroy的时候销毁
-    public ArrayList<Subscription> subscriptionArrayList = new ArrayList<>();
+    //rxjava访问的Subscription集合
+    public CompositeSubscription pendingSubscriptions = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscriptionArrayList.size() > 0) {
-            for (Subscription subscription : subscriptionArrayList) {
-                subscription.unsubscribe();
-            }
-        }
+        pendingSubscriptions.clear();
     }
 }
