@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.zhanghongqiang.databindingsample.utils.StringUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 
@@ -42,13 +43,13 @@ public final class MyBindingAdapter {
 
     /**
      * 截取小数值,保留几位
-     * xml写法:app:text="@{2.22}"
+     * xml写法:app:text="@{2.2200077778}"
      * @param textView
      * @param doubleValue 小数值
      */
     @BindingAdapter({"bind:text"})
     public static void bindTextView(TextView textView, double doubleValue) {
-        textView.setText("doubleValue:" + doubleValue);
+        textView.setText(StringUtils.getStringFromFloatKeep2(doubleValue));
     }
 
 

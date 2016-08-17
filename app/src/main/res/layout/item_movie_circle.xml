@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/item_movie_img"
-                app:text="@{2.22}"/>
+                app:text="@{2.22700033}"/>
 
             <TextView
                 android:id="@+id/item_movie_attr"
