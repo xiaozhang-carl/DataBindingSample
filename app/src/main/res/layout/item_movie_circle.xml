@@ -25,24 +25,15 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/item_movie_img"
-                android:layout_width="80dp"
+                android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 app:url="@{movie.getImages().getMedium()}"
-                fresco:placeholderImage="@drawable/ic_loading_rotate"
-                fresco:actualImageScaleType="focusCrop"
-                fresco:fadeDuration="300"
-                fresco:failureImageScaleType="centerInside"
-                fresco:placeholderImageScaleType="fitCenter"
-                fresco:progressBarAutoRotateInterval="1000"
-                fresco:progressBarImageScaleType="centerInside"
-                fresco:retryImageScaleType="centerCrop"
-                fresco:roundAsCircle="false"
-                fresco:roundBottomLeft="false"
+                fresco:roundBottomLeft="true"
+                fresco:roundBottomRight="true"
                 fresco:roundTopLeft="true"
-                fresco:roundTopRight="false"
-                fresco:roundedCornerRadius="3dp"
-                fresco:roundingBorderWidth="3dp"/>
+                fresco:roundTopRight="true"
+                fresco:roundedCornerRadius="50dp"/>
 
 
             <TextView
@@ -50,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/item_movie_img"
-                android:text="@{movie.getTitle()}"/>
+                app:text="@{2.22}"/>
 
             <TextView
                 android:id="@+id/item_movie_attr"
@@ -59,7 +50,7 @@
                 android:layout_below="@+id/item_movie_name"
                 android:layout_toRightOf="@+id/item_movie_img"
                 android:autoLink="all"
-                android:text="@{movie.getAlt()}"/>
+                app:text="@{movie.getAlt()}"/>
 
 
         </RelativeLayout>

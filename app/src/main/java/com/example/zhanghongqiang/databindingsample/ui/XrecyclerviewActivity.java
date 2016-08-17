@@ -72,7 +72,7 @@ public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewC
 
     @Override
     public void loadData() {
-        subscriptionArrayList.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
+        pendingSubscriptions.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
                 recyclerViewPresenter.nextPage()
                 , recyclerViewPresenter.getCount())
                 , new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {

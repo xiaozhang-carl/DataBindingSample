@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.api.Api;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityNestRecyclerviewBinding;
-import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
+import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieCircleBinding;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewContract;
@@ -83,7 +83,7 @@ public class NestRecyclerviewActivity extends BaseActivity implements RecyclerVi
 
     @Override
     public void updateView(@NonNull final Movie data, @NonNull ViewDataBinding binding) {
-        ItemMovieBinding b = (ItemMovieBinding) binding;
+        ItemMovieCircleBinding b = (ItemMovieCircleBinding) binding;
         b.setMovie(data);
 
         b.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -101,6 +101,6 @@ public class NestRecyclerviewActivity extends BaseActivity implements RecyclerVi
 
     @Override
     public ViewDataBinding createView(ViewGroup parent, int viewType) {
-        return DataBindingUtil.inflate(inflater, R.layout.item_movie, parent, false);
+        return DataBindingUtil.inflate(inflater, R.layout.item_movie_circle, parent, false);
     }
 }

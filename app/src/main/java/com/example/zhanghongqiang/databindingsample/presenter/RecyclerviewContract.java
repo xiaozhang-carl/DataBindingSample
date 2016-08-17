@@ -68,7 +68,7 @@ public interface RecyclerViewContract {
                 ViewDataBinding binding = F.createView(parent, viewType);
                 MyAdapterViewHolder viewHolder = new MyAdapterViewHolder(binding.getRoot());
                 viewHolder.mViewDataBinding = binding;
-
+                parent.addView(binding.getRoot());
                 return viewHolder;
             }
 

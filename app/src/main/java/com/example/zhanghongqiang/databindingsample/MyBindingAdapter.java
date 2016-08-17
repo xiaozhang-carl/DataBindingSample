@@ -1,13 +1,11 @@
 package com.example.zhanghongqiang.databindingsample;
 
-import android.content.Context;
 import android.databinding.BindingAdapter;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 
 /**
@@ -15,38 +13,15 @@ import com.bumptech.glide.Glide;
  */
 public final class MyBindingAdapter {
 
-
-    @BindingAdapter({"bind:url"})
-    public static void showloadImage(ImageView view, String url) {
-        loadImage(view, url);
-    }
-
     /**
-     * @param view
-     * @param url
+     * 显示图片
+     * xml写法:app:url="@{url}"
+     * @param simpleDraweeView  fresco的图片
+     * @param url  图片地址
      */
     @BindingAdapter({"bind:url"})
-    public static void loadImage(ImageView view, String url) {
-
-
-        int defaultImageRes;
-        Context context = view.getContext();
-
-        defaultImageRes = R.mipmap.ic_launcher;
-
-        //空的图片地址的话就显示默认图片
-        if (TextUtils.isEmpty(url)) {
-            view.setImageResource(defaultImageRes);
-            return;
-        }
-        if (url.startsWith("htt")) {
-            Glide.with(context).load(url).into(view);
-        }
-        if (url.startsWith("/")) {
-            url = "file://" + url;
-            Glide.with(context).load(url).into(view);
-        }
-
+    public static void showloadImage(SimpleDraweeView simpleDraweeView, String url) {
+        simpleDraweeView.setImageURI(url);
     }
 
     @BindingAdapter({"bind:text"})
@@ -56,6 +31,26 @@ public final class MyBindingAdapter {
             editText.setSelection(newValue.length());
         }
     }
+
+    @BindingAdapter({"bind:text"})
+    public static void bindTextView(TextView textView, CharSequence newValue) {
+        if (newValue != null) {
+            textView.setText(newValue);
+        }
+    }
+
+
+    /**
+     * 截取小数值,保留几位
+     * xml写法:app:text="@{2.22}"
+     * @param textView
+     * @param doubleValue 小数值
+     */
+    @BindingAdapter({"bind:text"})
+    public static void bindTextView(TextView textView, double doubleValue) {
+        textView.setText("doubleValue:" + doubleValue);
+    }
+
 
     @BindingAdapter("bind:selected")
     public static void setPaddingLeft(View view, boolean selected) {
