@@ -6,12 +6,13 @@ import android.view.View;
 
 import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.databinding.ActivityMainBinding;
+import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
 
 /**
  * Created by zhanghongqiang on 16/8/13  下午2:06
  * ToDo:
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnLongClickListener{
     ActivityMainBinding mBinding;
 
     @Override
@@ -28,7 +29,15 @@ public class MainActivity extends BaseActivity {
     public void test2(View view) {
         startActivity(XRecyclerviewActivity.class);
     }
+
+
     public void test3(View view) {
         startActivity(NestRecyclerviewActivity.class);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        ToastUtil.show(this,"onLongClick");
+        return false;
     }
 }

@@ -29,12 +29,20 @@
             android:onClick="@{click::test2}"
             android:text="XRecyclerviewActivity"
             android:textAllCaps="false"/>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{click::test3}"
             android:text="NestRecyclerviewActivity"
             android:textAllCaps="false"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="onLongClick"
+            android:textAllCaps="false"
+            app:onLongClickListener="@{click}"/>
 
     </LinearLayout>
 </layout>
