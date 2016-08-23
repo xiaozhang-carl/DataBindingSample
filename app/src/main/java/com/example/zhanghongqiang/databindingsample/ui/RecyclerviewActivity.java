@@ -92,7 +92,6 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
                 data.setTitle("xiaozhanghehe");
 //                recyclerViewPresenter.notifyItemChanged(position);
                 int position = recyclerViewPresenter.indexOf(data);
-                recyclerViewPresenter.getDataList().remove(position);
                 recyclerViewPresenter.notifyItemRangeRemoved(position);
             }
         });

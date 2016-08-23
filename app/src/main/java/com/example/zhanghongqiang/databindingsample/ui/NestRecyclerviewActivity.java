@@ -92,7 +92,6 @@ public class NestRecyclerviewActivity extends BaseActivity implements RecyclerVi
                 data.setTitle("xiaozhanghehe");
 //                recyclerViewPresenter.notifyItemChanged(position);
                 int position = recyclerViewPresenter.indexOf(data);
-                recyclerViewPresenter.getDataList().remove(position);
                 recyclerViewPresenter.notifyItemRangeRemoved(position);
             }
         });
