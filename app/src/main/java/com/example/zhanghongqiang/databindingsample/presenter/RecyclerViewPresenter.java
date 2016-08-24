@@ -68,14 +68,14 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         }
     }
 
-    public RecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
+    public RecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {
         super(L,F);
     }
 
     /**
      * @return
      */
-    public static RecyclerViewPresenter with(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFListview F) {
+    public static RecyclerViewPresenter with(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {
         return new RecyclerViewPresenter(L, F);
     }
 

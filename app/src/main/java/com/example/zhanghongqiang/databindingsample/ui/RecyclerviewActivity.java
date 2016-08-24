@@ -25,7 +25,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/8/13  下午1:55
  * ToDo:
  */
-public class RecyclerviewActivity extends BaseActivity implements RecyclerViewContract.IFLoadData, RecyclerViewContract.IFListview<Movie> {
+public class RecyclerviewActivity extends BaseActivity implements RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<Movie> {
 
     private ActivityRecyclerviewBinding mBinding;
 
