@@ -338,7 +338,11 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     public void notifyItemChanged(int position) {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            mAdapter.notifyItemRangeChanged(position + 1, 1);
+            if (mHeaderView == null) {
+                mAdapter.notifyItemRangeChanged(position + 1, 1);
+            } else {
+                mAdapter.notifyItemRangeChanged(position + 2, 1);
+            }
         }
     }
 
@@ -350,7 +354,11 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
             getDataList().remove(position);
-            mAdapter.notifyItemRangeRemoved(position + 1, 1);
+            if (mHeaderView == null) {
+                mAdapter.notifyItemRangeRemoved(position + 1, 1);
+            } else {
+                mAdapter.notifyItemRangeRemoved(position + 2, 1);
+            }
         }
     }
 

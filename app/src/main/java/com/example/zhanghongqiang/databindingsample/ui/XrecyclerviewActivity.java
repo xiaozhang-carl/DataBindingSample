@@ -26,7 +26,7 @@ import java.util.List;
  * Created by zhanghongqiang on 16/4/5  下午2:35
  * ToDo:
  */
-public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewContract.IFLoadData, RecyclerViewContract.IFListview<Movie> {
+public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<Movie> {
 
     ActivityXrecyclerviewBinding binding;
     //布局填充器
@@ -109,7 +109,6 @@ public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewC
                 data.setTitle("xiaozhanghehe");
 //                recyclerViewPresenter.notifyItemChanged(position);
                 int position = recyclerViewPresenter.indexOf(data);
-                recyclerViewPresenter.getDataList().remove(position);
                 recyclerViewPresenter.notifyItemRangeRemoved(position);
             }
         });

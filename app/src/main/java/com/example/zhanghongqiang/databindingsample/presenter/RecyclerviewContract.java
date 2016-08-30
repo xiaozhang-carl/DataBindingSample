@@ -22,7 +22,7 @@ public interface RecyclerViewContract {
     }
 
     //适配器使用
-    interface IFListview<T> {
+    interface IFAdapter<T> {
 
         //可以根据数据类型来显示不同的item
         int getViewType(int position);
@@ -37,13 +37,13 @@ public interface RecyclerViewContract {
     //代理者
     abstract class XRDelegate<T> {
 
-        public XRDelegate(IFLoadData l, IFListview f) {
-            F = f;
+        public XRDelegate(IFLoadData l, IFAdapter f) {
             L = l;
+            F = f;
         }
 
         //暴露给外界的接口是实现者
-        RecyclerViewContract.IFListview F = null;
+        RecyclerViewContract.IFAdapter F = null;
 
         RecyclerViewContract.IFLoadData L = null;
 
