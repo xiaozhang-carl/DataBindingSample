@@ -90,7 +90,6 @@ public class NestRecyclerviewActivity extends BaseActivity implements RecyclerVi
             @Override
             public void onClick(View v) {
                 data.setTitle("xiaozhanghehe");
-//                recyclerViewPresenter.notifyItemChanged(position);
                 int position = recyclerViewPresenter.indexOf(data);
                 recyclerViewPresenter.notifyItemRangeRemoved(position);
             }
