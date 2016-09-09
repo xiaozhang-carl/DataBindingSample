@@ -14,9 +14,17 @@
             app:title="@{@string/test}"/>
 
 
-        <include
-            android:id="@+id/XRecyclerViewLayout"
-            layout="@layout/view_recyclerview"/>
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <com.jcodecraeer.xrecyclerview.XRecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"/>
+
+        </FrameLayout>
     </LinearLayout>
 </layout>

@@ -57,7 +57,7 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
     public void loadData() {
         pendingSubscriptions.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
                 1
-                , 20)
+                , 5)
                 , new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
 
 

@@ -5,9 +5,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.FrameLayout;
 
-import com.example.zhanghongqiang.databindingsample.databinding.ViewEmptyBinding;
-import com.example.zhanghongqiang.databindingsample.databinding.ViewRecyclerviewBinding;
 import com.example.zhanghongqiang.databindingsample.view.FullyLinearLayoutManager;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -20,12 +19,14 @@ import java.util.List;
  */
 public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
+    //列表的父布局
+    FrameLayout mFrameLayout;
 
-    //databinding的好处是可以减少自定义view,这是一个包含列表,空布局的xml
-    ViewRecyclerviewBinding mBinding;
+    //列表空布局的现实
+    View mEmptyView;
 
     //ViewRecyclerviewBinding里面的空布局
-    ViewEmptyBinding mEmptyBinding;
+//    ViewEmptyBinding mEmptyBinding;
 
     //xml里面的列表
     private XRecyclerView mRecyclerView;
@@ -144,8 +145,16 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         return new XRecyclerViewPresenter(L, F);
     }
 
-    public XRecyclerViewPresenter recyclerView(@NonNull ViewRecyclerviewBinding binding) {
-        initVariable(binding);
+    public XRecyclerViewPresenter recyclerView(@NonNull XRecyclerView recyclerView) {
+        initVariable(recyclerView, null, null);
+        linearLayoutManager();
+        setRefreshLoadMore();
+        setRefreshLoadingMoreProgressStyle();
+        return this;
+    }
+
+    public XRecyclerViewPresenter recyclerView(@NonNull XRecyclerView recyclerView, FrameLayout frameLayout, View emptyView) {
+        initVariable(recyclerView, frameLayout, emptyView);
         linearLayoutManager();
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
@@ -153,8 +162,8 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
 
-    public XRecyclerViewPresenter fullRecyclerView(ViewRecyclerviewBinding binding) {
-        initVariable(binding);
+    public XRecyclerViewPresenter fullRecyclerView(@NonNull XRecyclerView recyclerView, FrameLayout frameLayout, View emptyView) {
+        initVariable(recyclerView, frameLayout, emptyView);
         fullLinearLayoutManager();
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
@@ -169,22 +178,44 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         mRecyclerView.setLayoutManager(layoutManager);
     }
 
-    private void initVariable(@NonNull ViewRecyclerviewBinding binding) {
-        mBinding = binding;
-        mRecyclerView = mBinding.recyclerview;
-        mEmptyBinding = mBinding.viewStub;
+    /**
+     * 初始化列表,列表父布局,需要显示的空布局
+     *
+     * @param recyclerView
+     * @param frameLayout
+     * @param emptyView
+     */
+    private void initVariable(@NonNull XRecyclerView recyclerView, FrameLayout frameLayout, View emptyView) {
+        mRecyclerView = recyclerView;
+        if (frameLayout != null && emptyView != null) {
+            mFrameLayout = frameLayout;
+            mEmptyView = emptyView;
+            //空布局添加到父布局
+            mFrameLayout.addView(mEmptyView);
+        }
     }
 
 
-    public ViewEmptyBinding getEmptyBinding() {
-        return mEmptyBinding;
+    public View getEmptyView() {
+        return mEmptyView;
     }
 
     /**
      * @param spanCount 网格布局的格数
      */
-    public XRecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount) {
-        initVariable(binding);
+    public XRecyclerViewPresenter<T> recyclerView(XRecyclerView recyclerView, FrameLayout frameLayout, View emptyView, int spanCount) {
+        initVariable(recyclerView, frameLayout, emptyView);
+        gridLayoutManager(spanCount);
+        setRefreshLoadMore();
+        setRefreshLoadingMoreProgressStyle();
+        return this;
+    }
+
+    /**
+     * @param spanCount 网格布局的格数
+     */
+    public XRecyclerViewPresenter<T> recyclerView(XRecyclerView recyclerView, int spanCount) {
+        initVariable(recyclerView, null, null);
         gridLayoutManager(spanCount);
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
@@ -196,8 +227,21 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      * @param orientation
      * @return
      */
-    public XRecyclerViewPresenter<T> recyclerView(@NonNull ViewRecyclerviewBinding binding, int spanCount, int orientation) {
-        initVariable(binding);
+    public XRecyclerViewPresenter<T> recyclerView(XRecyclerView recyclerView, int spanCount, int orientation) {
+        initVariable(recyclerView, null, null);
+        staggeredGridLayoutManager(spanCount, orientation);
+        setRefreshLoadMore();
+        setRefreshLoadingMoreProgressStyle();
+        return this;
+    }
+
+    /**
+     * @param spanCount   交错网格的格子数
+     * @param orientation
+     * @return
+     */
+    public XRecyclerViewPresenter<T> recyclerView(XRecyclerView recyclerView, FrameLayout frameLayout, View emptyView, int spanCount, int orientation) {
+        initVariable(recyclerView, frameLayout, emptyView);
         staggeredGridLayoutManager(spanCount, orientation);
         setRefreshLoadMore();
         setRefreshLoadingMoreProgressStyle();
@@ -223,8 +267,8 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
                 //页面设置为第一页
                 if (L != null) {
                     mPage = 0;
-                    if (mEmptyBinding.getRoot() != null) {
-                        mEmptyBinding.getRoot().setVisibility(View.GONE);
+                    if (mEmptyView != null) {
+                        mEmptyView.setVisibility(View.GONE);
                     }
                     L.loadData();
                 }
@@ -283,14 +327,6 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         return this;
     }
 
-    public XRecyclerViewPresenter emptyTip(@NonNull String tip) {
-        if (mEmptyBinding != null) {
-            mEmptyBinding.setTip(tip);
-        }
-        return this;
-    }
-
-
     /**
      * @param pullRefresh 头部是否下拉
      * @param loadingMore 底部加载更多
@@ -324,7 +360,7 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     public void notifyDataSetChanged() {
         if (mAdapter != null) {
             //数据如果为空的话,现实占位图
-            if (mEmptyBinding.getRoot() != null && getDataList().size() == 0) {
+            if (mEmptyView != null && getDataList().size() == 0) {
                 showEmptyView();
             }
             mAdapter.notifyDataSetChanged();
@@ -359,19 +395,22 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
             } else {
                 mAdapter.notifyItemRangeRemoved(position + 2, 1);
             }
+            if (getDataList().size() == 0) {
+                showEmptyView();
+            }
         }
     }
 
 
     public void showEmptyView() {
-        if (mEmptyBinding.getRoot() != null) {
-            mEmptyBinding.getRoot().setVisibility(View.VISIBLE);
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(View.VISIBLE);
         }
     }
 
     private void hideEmptyView() {
-        if (mEmptyBinding.getRoot() != null) {
-            mEmptyBinding.getRoot().setVisibility(View.GONE);
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(View.GONE);
         }
     }
 

@@ -34,15 +34,17 @@ public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewC
     //列表代理
     XRecyclerViewPresenter recyclerViewPresenter;
 
+    ViewEmptyBinding mEmptyBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_xrecyclerview);
+        mEmptyBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.view_empty, null, false);
         inflater = getLayoutInflater();
 
         recyclerViewPresenter = XRecyclerViewPresenter.with(this, this)
-                .recyclerView(binding.XRecyclerViewLayout)
-                .emptyTip("no  data")
+                .recyclerView(binding.recyclerview, binding.frameLayout, mEmptyBinding.getRoot())
                 .build();
         //空布局
         initEmptyView();
@@ -52,11 +54,10 @@ public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewC
 
     private void initEmptyView() {
         //获取空布局
-        ViewEmptyBinding emptyBinding = recyclerViewPresenter.getEmptyBinding();
         //空布局的实现
-        if (emptyBinding != null) {
-            emptyBinding.button.setVisibility(View.VISIBLE);
-            emptyBinding.button.setOnClickListener(new View.OnClickListener() {
+        if (mEmptyBinding != null) {
+            mEmptyBinding.button.setVisibility(View.VISIBLE);
+            mEmptyBinding.button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     recyclerViewPresenter.reLoadData();
