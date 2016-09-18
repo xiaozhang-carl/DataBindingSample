@@ -55,7 +55,7 @@ public interface RecyclerViewContract {
 
         public abstract void notifyItemRangeRemoved(int position);
 
-        public abstract <T> void notifyItemRangeInserted(int position, T t);
+        public abstract  void notifyItemRangeInserted(int position, T t);
 
 
         //适配器
@@ -96,7 +96,7 @@ public interface RecyclerViewContract {
             public void clearList() {
                 //防止刷新闪烁的出现
                 mDatas.clear();
-                notifyItemRangeRemoved(0, mDatas.size());
+                notifyDataSetChanged();
             }
 
             public void addNewList(List<T> list) {
