@@ -401,6 +401,17 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         }
     }
 
+    @Override
+    public void notifyItemRangeInserted(int position) {
+        if (mAdapter != null) {
+            //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+            if (mHeaderView == null) {
+                mAdapter.notifyItemRangeInserted(position + 1, 1);
+            } else {
+                mAdapter.notifyItemRangeInserted(position + 2, 1);
+            }
+        }
+    }
 
     public void showEmptyView() {
         if (mEmptyView != null) {

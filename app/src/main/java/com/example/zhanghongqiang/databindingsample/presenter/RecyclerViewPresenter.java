@@ -33,7 +33,6 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
 
-
     //加载成功的结果显示
     public void success(List<T> list) {
 
@@ -52,7 +51,6 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
 
-
     //重新加载数据
     @Override
     public void reLoadData() {
@@ -69,7 +67,7 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
     public RecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {
-        super(L,F);
+        super(L, F);
     }
 
     /**
@@ -80,14 +78,14 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
     public RecyclerViewPresenter recyclerView(RecyclerView recyclerView) {
-        this.mRecyclerView=recyclerView;
+        this.mRecyclerView = recyclerView;
         linearLayoutManager();
         return this;
     }
 
 
-    public RecyclerViewPresenter fullRecyclerView( RecyclerView recyclerView) {
-        this.mRecyclerView=recyclerView;
+    public RecyclerViewPresenter fullRecyclerView(RecyclerView recyclerView) {
+        this.mRecyclerView = recyclerView;
         fullLinearLayoutManager();
         return this;
     }
@@ -101,13 +99,11 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
 
-
-
     /**
      * @param spanCount 网格布局的格数
      */
     public RecyclerViewPresenter<T> recyclerView(RecyclerView recyclerView, int spanCount) {
-        this.mRecyclerView=recyclerView;
+        this.mRecyclerView = recyclerView;
         gridLayoutManager(spanCount);
         return this;
     }
@@ -118,7 +114,7 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      * @return
      */
     public RecyclerViewPresenter<T> recyclerView(RecyclerView recyclerView, int spanCount, int orientation) {
-        this.mRecyclerView=recyclerView;
+        this.mRecyclerView = recyclerView;
         staggeredGridLayoutManager(spanCount, orientation);
         return this;
     }
@@ -155,7 +151,6 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount, orientation);
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
-
 
 
     public RecyclerViewPresenter<T> build() {
@@ -195,4 +190,10 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         }
     }
 
+    @Override
+    public void notifyItemRangeInserted(int position) {
+        if (mAdapter != null) {
+            mAdapter.notifyItemRangeInserted(position, 1);
+        }
+    }
 }

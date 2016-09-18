@@ -15,11 +15,13 @@ import com.example.zhanghongqiang.databindingsample.databinding.ActivityRecycler
 import com.example.zhanghongqiang.databindingsample.databinding.ItemMovieBinding;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
-import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewPresenter;
 import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewContract;
+import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewPresenter;
 import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by zhanghongqiang on 16/8/13  下午1:55
@@ -55,6 +57,8 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
 
     @Override
     public void loadData() {
+        Observable<HttpResult<List<Movie>>> observable = Api.getInstance().getRest().getTopMovie(1, 5);
+//        observable.
         pendingSubscriptions.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
                 1
                 , 5)
