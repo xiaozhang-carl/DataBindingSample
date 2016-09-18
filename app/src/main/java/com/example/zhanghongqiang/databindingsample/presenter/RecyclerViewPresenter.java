@@ -186,14 +186,19 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     @Override
     public void notifyItemRangeRemoved(int position) {
         if (mAdapter != null) {
+            getDataList().remove(position);
             mAdapter.notifyItemRangeRemoved(position, 1);
         }
     }
 
     @Override
-    public void notifyItemRangeInserted(int position) {
+    public void notifyItemRangeInserted(int position, Object o) {
+        T t= (T) o;
         if (mAdapter != null) {
+            getDataList().add(position,t);
             mAdapter.notifyItemRangeInserted(position, 1);
         }
     }
+
+
 }

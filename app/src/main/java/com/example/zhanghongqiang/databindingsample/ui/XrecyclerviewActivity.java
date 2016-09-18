@@ -107,9 +107,9 @@ public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewC
         b.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data.setTitle("xiaozhanghehe");
-                int position = recyclerViewPresenter.indexOf(data);
-                recyclerViewPresenter.notifyItemRangeRemoved(position);
+//                int position = recyclerViewPresenter.indexOf(data);
+//                recyclerViewPresenter.notifyItemRangeRemoved(position);
+                recyclerViewPresenter.notifyItemRangeInserted(0, data);
             }
         });
 

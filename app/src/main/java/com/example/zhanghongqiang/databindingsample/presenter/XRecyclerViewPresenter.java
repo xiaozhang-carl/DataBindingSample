@@ -401,10 +401,18 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         }
     }
 
+    /**
+     *
+     * @param position 需要加入到列表的位置
+     * @param o 列表的item数据
+     */
+
     @Override
-    public void notifyItemRangeInserted(int position) {
+    public void notifyItemRangeInserted(int position, Object o) {
+        T t= (T) o;
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+            getDataList().add(position,t);
             if (mHeaderView == null) {
                 mAdapter.notifyItemRangeInserted(position + 1, 1);
             } else {

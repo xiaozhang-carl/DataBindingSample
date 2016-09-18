@@ -2,10 +2,9 @@ package com.example.zhanghongqiang.databindingsample.presenter;
 
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public interface RecyclerViewContract {
     }
 
     //代理者
-    abstract class XRDelegate<T> {
+    public abstract class XRDelegate<T> {
 
         public XRDelegate(IFLoadData l, IFAdapter f) {
             L = l;
@@ -48,17 +47,19 @@ public interface RecyclerViewContract {
         RecyclerViewContract.IFLoadData L = null;
 
 
-        abstract void reLoadData();
+        public abstract void reLoadData();
 
-        abstract void notifyDataSetChanged();
+        public abstract void notifyDataSetChanged();
 
-        abstract void notifyItemChanged(int position);
+        public abstract void notifyItemChanged(int position);
 
-        abstract void notifyItemRangeRemoved(int position);
+        public abstract void notifyItemRangeRemoved(int position);
+
+        public abstract <T> void notifyItemRangeInserted(int position, T t);
 
 
         //适配器
-        class MyAdapter<T> extends XRecyclerView.Adapter<MyAdapterViewHolder<T>> {
+        class MyAdapter<T> extends RecyclerView.Adapter<MyAdapterViewHolder<T>> {
 
             ArrayList<T> mDatas = new ArrayList<>();
 
@@ -93,14 +94,16 @@ public interface RecyclerViewContract {
             }
 
             public void clearList() {
+                //防止刷新闪烁的出现
                 mDatas.clear();
-                notifyDataSetChanged();
+                notifyItemRangeRemoved(0, mDatas.size());
             }
 
             public void addNewList(List<T> list) {
+                //防止刷新闪烁的出现
                 if (list != null && list.size() > 0) {
                     mDatas.addAll(list);
-                    notifyDataSetChanged();
+                    notifyItemRangeInserted(mDatas.size(), list.size());
                 }
             }
 
@@ -110,7 +113,7 @@ public interface RecyclerViewContract {
         /**
          * RecyclerView万用的适配器
          */
-        class MyAdapterViewHolder<T> extends XRecyclerView.ViewHolder {
+        class MyAdapterViewHolder<T> extends RecyclerView.ViewHolder {
 
 
             ViewDataBinding mViewDataBinding;
