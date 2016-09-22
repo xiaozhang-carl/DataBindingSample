@@ -99,11 +99,11 @@ public interface RecyclerViewContract {
                 notifyDataSetChanged();
             }
 
-            public void addNewList(List<T> list) {
+            public void addNewList(int insertPosition,List<T> list) {
                 //防止刷新闪烁的出现
                 if (list != null && list.size() > 0) {
                     mDatas.addAll(list);
-                    notifyItemRangeInserted(mDatas.size(), list.size());
+                    notifyItemRangeInserted(insertPosition, list.size());
                 }
             }
 

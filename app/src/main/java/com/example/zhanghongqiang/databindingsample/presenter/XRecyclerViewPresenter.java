@@ -112,7 +112,13 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         //隐藏占位图
         hideEmptyView();
         //加入新的数据
-        mAdapter.addNewList(list);
+        //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+        int position=getDataList().size();
+        if (mHeaderView == null) {
+            mAdapter.addNewList(position+1,list);
+        } else {
+            mAdapter.addNewList(position+2,list);
+        }
         //刷新完成,隐藏进度条...
         refreshComplete();
     }
@@ -372,6 +378,9 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemChanged(int position) {
+        if (position<0){
+            return;
+        }
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
             if (mHeaderView == null) {
@@ -387,6 +396,9 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemRangeRemoved(int position) {
+        if (position<0){
+            return;
+        }
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
             getDataList().remove(position);
@@ -409,6 +421,9 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
     @Override
     public void notifyItemRangeInserted(int position, Object o) {
+        if (position<0){
+            return;
+        }
         T t= (T) o;
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1

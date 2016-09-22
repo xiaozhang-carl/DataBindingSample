@@ -46,7 +46,7 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
         }
         //加入新的数据
-        mAdapter.addNewList(list);
+        mAdapter.addNewList(0,list);
 
     }
 
@@ -175,6 +175,9 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemChanged(int position) {
+        if (position<0){
+            return;
+        }
         if (mAdapter != null) {
             mAdapter.notifyItemRangeChanged(position, 1);
         }
@@ -185,17 +188,30 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemRangeRemoved(int position) {
+        if (position<0){
+            return;
+        }
         if (mAdapter != null) {
             getDataList().remove(position);
             mAdapter.notifyItemRangeRemoved(position, 1);
         }
     }
 
+    /**
+     *
+     * @param position 插入列表的位置
+     * @param o
+     */
     @Override
     public void notifyItemRangeInserted(int position, Object o) {
+        if (position<0){
+            return;
+        }
         T t= (T) o;
         if (mAdapter != null) {
+            //添加到数据源
             getDataList().add(position,t);
+            //显示数据
             mAdapter.notifyItemRangeInserted(position, 1);
         }
     }
