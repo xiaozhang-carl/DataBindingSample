@@ -27,7 +27,7 @@ public interface RecyclerViewContract {
         int getViewType(int position);
 
         //显示数据
-        void updateView(@NonNull T data, @NonNull ViewDataBinding binding);
+        void setData(@NonNull T data, @NonNull ViewDataBinding binding);
 
         //这里的使用一定要注意,用第二个参数来判断
         ViewDataBinding createView(ViewGroup parent, int position);
@@ -49,13 +49,17 @@ public interface RecyclerViewContract {
 
         public abstract void reLoadData();
 
+        public abstract void add(List<T> list);
+
+        public abstract void clearData();
+
         public abstract void notifyDataSetChanged();
 
         public abstract void notifyItemChanged(int position);
 
         public abstract void notifyItemRangeRemoved(int position);
 
-        public abstract  void notifyItemRangeInserted(int position, T t);
+        public abstract void notifyItemRangeInserted(int position, T t);
 
 
         //适配器
@@ -93,13 +97,14 @@ public interface RecyclerViewContract {
                 return F.getViewType(position);
             }
 
-            public void clearList() {
+            public void clearList(int positionStart) {
                 //防止刷新闪烁的出现
+                int itemCount = mDatas.size();
                 mDatas.clear();
-                notifyDataSetChanged();
+                notifyItemRangeRemoved(positionStart, itemCount);
             }
 
-            public void addNewList(int insertPosition,List<T> list) {
+            public void addNewList(int insertPosition, List<T> list) {
                 //防止刷新闪烁的出现
                 if (list != null && list.size() > 0) {
                     mDatas.addAll(list);
@@ -124,7 +129,7 @@ public interface RecyclerViewContract {
 
             public void setData(T data) {
                 //调用接口的方法
-                F.updateView(data, mViewDataBinding);
+                F.setData(data, mViewDataBinding);
             }
         }
 

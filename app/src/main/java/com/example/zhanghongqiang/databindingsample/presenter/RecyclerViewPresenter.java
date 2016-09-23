@@ -15,56 +15,12 @@ import java.util.List;
  */
 public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
 
-
     //xml里面的列表
     private RecyclerView mRecyclerView;
 
     //万用的适配器
     private MyAdapter mAdapter;
 
-
-    //获取数据列表
-    public List<T> getDataList() {
-        return mAdapter.mDatas;
-    }
-
-    public int indexOf(T t) {
-        return getDataList().indexOf(t);
-    }
-
-
-    //加载成功的结果显示
-    public void success(List<T> list) {
-
-        //没有数据,显示空数据
-        if (list.size() == 0) {
-            mAdapter.clearList();
-            return;
-        } else {
-            //有数据的话,清空原来的数据,防止数据重复添加
-            mAdapter.clearList();
-
-        }
-        //加入新的数据
-        mAdapter.addNewList(0,list);
-
-    }
-
-
-    //重新加载数据
-    @Override
-    public void reLoadData() {
-        if (L != null) {
-            L.loadData();
-        }
-    }
-
-
-    public void clearData() {
-        if (mAdapter != null) {
-            mAdapter.clearList();
-        }
-    }
 
     public RecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {
         super(L, F);
@@ -175,7 +131,7 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemChanged(int position) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
         if (mAdapter != null) {
@@ -188,7 +144,7 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemRangeRemoved(int position) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
         if (mAdapter != null) {
@@ -198,23 +154,62 @@ public class RecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
     /**
-     *
      * @param position 插入列表的位置
      * @param o
      */
     @Override
     public void notifyItemRangeInserted(int position, Object o) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
-        T t= (T) o;
+        T t = (T) o;
         if (mAdapter != null) {
             //添加到数据源
-            getDataList().add(position,t);
+            getDataList().add(position, t);
             //显示数据
             mAdapter.notifyItemRangeInserted(position, 1);
         }
     }
 
+    //获取数据列表
+    public List<T> getDataList() {
+        return mAdapter.mDatas;
+    }
 
+    public int indexOf(T t) {
+        return getDataList().indexOf(t);
+    }
+
+
+    //重新加载数据
+    @Override
+    public void reLoadData() {
+        if (L != null) {
+            L.loadData();
+        }
+    }
+
+    @Override
+    public void add(List list) {
+        //没有数据,显示空数据
+        if (list.size() == 0) {
+            mAdapter.clearList(0);
+            return;
+        } else {
+            //有数据的话,清空原来的数据,防止数据重复添加
+            mAdapter.clearList(0);
+
+        }
+        //加入新的数据
+        mAdapter.addNewList(0, list);
+
+    }
+
+
+    @Override
+    public void clearData() {
+        if (mAdapter != null) {
+            mAdapter.clearList(0);
+        }
+    }
 }

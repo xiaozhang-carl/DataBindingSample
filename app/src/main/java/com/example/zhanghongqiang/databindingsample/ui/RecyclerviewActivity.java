@@ -67,7 +67,7 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
 
                     @Override
                     public void onNext(HttpResult<List<Movie>> listHttpResult) {
-                        recyclerViewPresenter.success(listHttpResult.getSubjects());
+                        recyclerViewPresenter.add(listHttpResult.getSubjects());
                     }
 
                     @Override
@@ -86,7 +86,7 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
 
 
     @Override
-    public void updateView(@NonNull final Movie data, @NonNull ViewDataBinding binding) {
+    public void setData(@NonNull final Movie data, @NonNull ViewDataBinding binding) {
         ItemMovieBinding b = (ItemMovieBinding) binding;
         b.setMovie(data);
 

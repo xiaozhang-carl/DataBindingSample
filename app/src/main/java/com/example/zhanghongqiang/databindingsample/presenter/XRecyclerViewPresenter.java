@@ -25,9 +25,6 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     //列表空布局的现实
     View mEmptyView;
 
-    //ViewRecyclerviewBinding里面的空布局
-//    ViewEmptyBinding mEmptyBinding;
-
     //xml里面的列表
     private XRecyclerView mRecyclerView;
 
@@ -46,99 +43,6 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     //每一页的item个数,默认20条
     private int mCount = 5;
 
-
-    //下一页,获取数据的时候调用
-    public int nextPage() {
-        return ++mPage;
-    }
-
-
-    public int getPage() {
-        return mPage;
-    }
-
-
-    //获取数据列表
-    public List<T> getDataList() {
-        return mAdapter.mDatas;
-    }
-
-    public int indexOf(T t) {
-        return getDataList().indexOf(t);
-    }
-
-    //返回每页的条数
-    public int getCount() {
-        return mCount;
-    }
-
-    //设置每页的条数
-    public void setCount(int count) {
-        this.mCount = count;
-    }
-
-    //设置页码,配合分页使用
-    public void setPage(int mPage) {
-        this.mPage = mPage;
-    }
-
-
-    //重新加载数据
-    @Override
-    public void reLoadData() {
-        if (L != null) {
-            mPage = 0;
-            L.loadData();
-        }
-    }
-
-    //加载成功的结果显示
-    public void success(List<T> list) {
-
-        //下拉刷新,多次请求首页的话,清空数据
-        if (mPage == 1 || mPage == 0) {
-            //第一页就没有数据,显示空数据
-            if (list.size() == 0) {
-                showEmptyView();
-                mAdapter.clearList();
-                //刷新完成,隐藏进度条...
-                refreshComplete();
-                return;
-            } else {
-                //有数据的话,清空原来的数据,防止数据重复添加
-                mAdapter.clearList();
-            }
-        }
-        //隐藏占位图
-        hideEmptyView();
-        //加入新的数据
-        //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-        int position=getDataList().size();
-        if (mHeaderView == null) {
-            mAdapter.addNewList(position+1,list);
-        } else {
-            mAdapter.addNewList(position+2,list);
-        }
-        //刷新完成,隐藏进度条...
-        refreshComplete();
-    }
-
-
-    //刷新完成,隐藏进度条...
-    public void refreshComplete() {
-        if (mPage <= 1) {
-            mRecyclerView.refreshComplete();
-        } else {
-            mRecyclerView.loadMoreComplete();
-        }
-
-    }
-
-    public void clearData() {
-        if (mAdapter != null) {
-            mAdapter.clearList();
-        }
-    }
 
     public XRecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {
         super(L, F);
@@ -362,6 +266,104 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
         return this;
     }
 
+    //下一页,获取数据的时候调用
+    public int nextPage() {
+        return ++mPage;
+    }
+
+
+    public int getPage() {
+        return mPage;
+    }
+
+
+    //获取数据列表
+    public List<T> getDataList() {
+        return mAdapter.mDatas;
+    }
+
+    public int indexOf(T t) {
+        return getDataList().indexOf(t);
+    }
+
+    //返回每页的条数
+    public int getCount() {
+        return mCount;
+    }
+
+    //设置每页的条数
+    public void setCount(int count) {
+        this.mCount = count;
+    }
+
+    //设置页码,配合分页使用
+    public void setPage(int mPage) {
+        this.mPage = mPage;
+    }
+
+
+    //重新加载数据
+    @Override
+    public void reLoadData() {
+        if (L != null) {
+            mPage = 0;
+            L.loadData();
+        }
+    }
+
+    @Override
+    public void add(List list) {
+        //下拉刷新,多次请求首页的话,清空数据
+        if (mPage == 1 || mPage == 0) {
+            //第一页就没有数据,显示空数据
+            if (list.size() == 0) {
+                showEmptyView();
+                clearData();
+                //刷新完成,隐藏进度条...
+                refreshComplete();
+                return;
+            } else {
+                //有数据的话,清空原来的数据,防止数据重复添加
+                clearData();
+            }
+        }
+        //隐藏占位图
+        hideEmptyView();
+        //加入新的数据
+        //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
+        int position = getDataList().size();
+        if (mHeaderView == null) {
+            mAdapter.addNewList(position + 1, list);
+        } else {
+            mAdapter.addNewList(position + 2, list);
+        }
+        //刷新完成,隐藏进度条...
+        refreshComplete();
+    }
+
+    @Override
+    public void clearData() {
+        if (mAdapter != null) {
+            if (mHeaderView == null) {
+                mAdapter.clearList(1);
+            } else {
+                mAdapter.clearList(2);
+            }
+        }
+    }
+
+
+    //刷新完成,隐藏进度条...
+    public void refreshComplete() {
+        if (mPage <= 1) {
+            mRecyclerView.refreshComplete();
+        } else {
+            mRecyclerView.loadMoreComplete();
+        }
+
+    }
+
+
     @Override
     public void notifyDataSetChanged() {
         if (mAdapter != null) {
@@ -378,7 +380,7 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemChanged(int position) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
         if (mAdapter != null) {
@@ -396,7 +398,7 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
      */
     @Override
     public void notifyItemRangeRemoved(int position) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
         if (mAdapter != null) {
@@ -414,20 +416,19 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     }
 
     /**
-     *
      * @param position 需要加入到列表的位置
-     * @param o 列表的item数据
+     * @param o        列表的item数据
      */
 
     @Override
     public void notifyItemRangeInserted(int position, Object o) {
-        if (position<0){
+        if (position < 0) {
             return;
         }
-        T t= (T) o;
+        T t = (T) o;
         if (mAdapter != null) {
             //一定要调用这个方法,因为XRecyclerView添加了头部,所以这个position+1
-            getDataList().add(position,t);
+            getDataList().add(position, t);
             if (mHeaderView == null) {
                 mAdapter.notifyItemRangeInserted(position + 1, 1);
             } else {
