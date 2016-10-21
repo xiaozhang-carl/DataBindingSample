@@ -32,9 +32,9 @@ public class RecyclerviewActivity extends BaseActivity implements RecyclerViewCo
     private ActivityRecyclerviewBinding mBinding;
 
     //布局填充器
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     //列表代理
-    RecyclerViewPresenter recyclerViewPresenter;
+    private RecyclerViewPresenter recyclerViewPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

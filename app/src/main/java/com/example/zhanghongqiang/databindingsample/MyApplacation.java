@@ -10,7 +10,9 @@ import com.facebook.drawee.backends.pipeline.Fresco;
  */
 public class MyApplacation extends Application {
 
+
     private static MyApplacation application;
+
 
     public static MyApplacation getInstance() {
         return application;

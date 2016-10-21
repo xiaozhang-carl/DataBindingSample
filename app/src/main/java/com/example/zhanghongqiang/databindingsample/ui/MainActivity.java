@@ -13,7 +13,9 @@ import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
  * ToDo:
  */
 public class MainActivity extends BaseActivity implements View.OnLongClickListener{
+
     ActivityMainBinding mBinding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     public void test1(View view) {
         startActivity(RecyclerviewActivity.class);
     }
+
 
     public void test2(View view) {
         startActivity(XRecyclerviewActivity.class);

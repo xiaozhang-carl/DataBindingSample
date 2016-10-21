@@ -71,4 +71,7 @@ public final class MyBindingAdapter {
     public static void setPaddingLeft(View view, boolean selected) {
         view.setSelected(selected);
     }
+
+
+
 }

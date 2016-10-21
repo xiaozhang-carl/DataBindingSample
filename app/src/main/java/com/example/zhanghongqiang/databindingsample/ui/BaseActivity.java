@@ -13,7 +13,7 @@ import rx.subscriptions.CompositeSubscription;
 public abstract class BaseActivity extends AppCompatActivity {
 
     //标题返回按钮
-    View view;
+    private View view;
 
     //rxjava访问的Subscription集合
     public CompositeSubscription pendingSubscriptions = new CompositeSubscription();
