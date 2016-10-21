@@ -28,13 +28,13 @@ import java.util.List;
  */
 public class XRecyclerviewActivity extends BaseActivity implements RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<Movie> {
 
-    ActivityXrecyclerviewBinding binding;
+    private ActivityXrecyclerviewBinding binding;
     //布局填充器
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     //列表代理
-    XRecyclerViewPresenter recyclerViewPresenter;
+    private XRecyclerViewPresenter recyclerViewPresenter;
 
-    ViewEmptyBinding mEmptyBinding;
+    private ViewEmptyBinding mEmptyBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
