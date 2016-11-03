@@ -41,7 +41,7 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
     private int mPage = 0;
 
     //每一页的item个数,默认20条
-    private int mCount = 5;
+    private int mCount = 20;
 
 
     public XRecyclerViewPresenter(RecyclerViewContract.IFLoadData L, RecyclerViewContract.IFAdapter F) {

@@ -29,7 +29,6 @@
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 app:url="@{movie.getImages().getMedium()}"
-                fresco:placeholderImage="@drawable/ic_loading_rotate"
                 fresco:actualImageScaleType="focusCrop"
                 fresco:fadeDuration="300"
                 fresco:failureImageScaleType="centerInside"

@@ -3,6 +3,7 @@ package com.example.zhanghongqiang.databindingsample;
 import android.databinding.BindingAdapter;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.zhanghongqiang.databindingsample.utils.StringUtils;
@@ -23,7 +24,12 @@ public final class MyBindingAdapter {
      */
     @BindingAdapter({"url"})
     public static void showloadImage(SimpleDraweeView simpleDraweeView, String url) {
-        simpleDraweeView.setImageURI(url);
+        simpleDraweeView.setImageURI("http://img.sibumbg.com/G1/M00/20/A8/CixGgVgQDoiAXmpXAADaMDjvSRE094.jpg");
+    }
+
+    @BindingAdapter({"url"})
+    public static void showloadImage(ImageView simpleDraweeView, String url) {
+
     }
 
     @BindingAdapter({"text"})
@@ -71,7 +77,6 @@ public final class MyBindingAdapter {
     public static void setPaddingLeft(View view, boolean selected) {
         view.setSelected(selected);
     }
-
 
 
 }
