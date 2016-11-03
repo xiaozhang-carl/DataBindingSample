@@ -40,9 +40,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         startActivity(NestRecyclerviewActivity.class);
     }
 
-    public void test4(View view) {
-        startActivity(IRecyclerviewActivity.class);
-    }
+
 
     @Override
     public boolean onLongClick(View view) {
