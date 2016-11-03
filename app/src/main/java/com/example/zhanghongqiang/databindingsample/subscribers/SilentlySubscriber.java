@@ -1,7 +1,7 @@
 package com.example.zhanghongqiang.databindingsample.subscribers;
 
+
 import com.example.zhanghongqiang.databindingsample.MyApplacation;
-import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
 
@@ -16,10 +16,10 @@ import rx.Subscriber;
  */
 public class SilentlySubscriber<T> extends Subscriber<T> {
 
-    private OnNext mOnNext;
+    private OnNext mNextListenter;
 
-    public SilentlySubscriber(OnNext mOnNext) {
-        this.mOnNext = mOnNext;
+    public SilentlySubscriber(OnNext nextListenter) {
+        this.mNextListenter= nextListenter;
     }
 
 
@@ -44,13 +44,15 @@ public class SilentlySubscriber<T> extends Subscriber<T> {
      */
     @Override
     public void onError(Throwable e) {
-        
+        if (mNextListenter!= null && mNextListenter instanceof OnNextOnError) {
+            ((OnNextOnError) mNextListenter).onError(e);
+        }
         if (e instanceof ConnectException) {
             ToastUtil.show(MyApplacation.getInstance(), "网络中断，请检查您的网络状态");
         } else if (e instanceof SocketTimeoutException) {
             ToastUtil.show(MyApplacation.getInstance(), "网络中断，请检查您的网络状态");
         } else {
-            ToastUtil.show(MyApplacation.getInstance(), MyApplacation.getInstance().getString(R.string.network_error));
+            ToastUtil.show(MyApplacation.getInstance(), "网络中断，请检查您的网络状态");
         }
     }
 
@@ -60,9 +62,9 @@ public class SilentlySubscriber<T> extends Subscriber<T> {
     @Override
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
-        if (mOnNext != null) {
+        if (mNextListenter!= null) {
             HttpResult<T> result = (HttpResult<T>) t;
-            mOnNext.onNext(result);
+            mNextListenter.onNext(result);
         }
     }
 

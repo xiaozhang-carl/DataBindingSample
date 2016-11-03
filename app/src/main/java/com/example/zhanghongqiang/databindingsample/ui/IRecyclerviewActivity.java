@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.model.Movie;
 import com.example.zhanghongqiang.databindingsample.presenter.IRecyclerViewPresenter;
 import com.example.zhanghongqiang.databindingsample.presenter.RecyclerViewContract;
-import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnErrorNoMatch;
+import com.example.zhanghongqiang.databindingsample.subscribers.OnNextOnError;
 
 import java.util.List;
 
@@ -74,10 +73,10 @@ public class IRecyclerviewActivity extends BaseActivity implements RecyclerViewC
 
     @Override
     public void loadData() {
-        pendingSubscriptions.add(Api.toSubscribe(this, Api.getInstance().getRest().getTopMovie(
+        pendingSubscriptions.add(Api.toSubscribe(Api.getInstance().getRest().getTopMovie(
                 recyclerViewPresenter.nextPage()
                 , recyclerViewPresenter.getCount())
-                , new OnNextOnErrorNoMatch<HttpResult<List<Movie>>>() {
+                , new OnNextOnError<HttpResult<List<Movie>>>() {
 
 
                     @Override
@@ -85,11 +84,6 @@ public class IRecyclerviewActivity extends BaseActivity implements RecyclerViewC
                         recyclerViewPresenter.add(listHttpResult.getSubjects());
                     }
 
-                    @Override
-                    public void notMatch(HttpResult<List<Movie>> listHttpResult) {
-                        Log.i("123", "result not match");
-
-                    }
 
 
                     @Override

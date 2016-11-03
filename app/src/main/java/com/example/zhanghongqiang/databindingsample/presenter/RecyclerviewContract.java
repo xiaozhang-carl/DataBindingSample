@@ -23,6 +23,8 @@ public interface RecyclerViewContract {
     //适配器使用
     interface IFAdapter<T> {
 
+
+
         //可以根据数据类型来显示不同的item
         int getViewType(int position);
 
@@ -31,10 +33,11 @@ public interface RecyclerViewContract {
 
         //这里的使用一定要注意,用第二个参数来判断
         ViewDataBinding createView(ViewGroup parent, int position);
+
     }
 
     //代理者
-    public abstract class XRDelegate<T> {
+    abstract class XRDelegate<T> {
 
         public XRDelegate(IFLoadData l, IFAdapter f) {
             L = l;
@@ -73,7 +76,6 @@ public interface RecyclerViewContract {
                 ViewDataBinding binding = F.createView(parent, viewType);
                 MyAdapterViewHolder viewHolder = new MyAdapterViewHolder(binding.getRoot());
                 viewHolder.mViewDataBinding = binding;
-                parent.addView(binding.getRoot());
                 return viewHolder;
             }
 

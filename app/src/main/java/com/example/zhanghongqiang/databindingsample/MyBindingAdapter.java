@@ -24,7 +24,7 @@ public final class MyBindingAdapter {
      */
     @BindingAdapter({"url"})
     public static void showloadImage(SimpleDraweeView simpleDraweeView, String url) {
-        simpleDraweeView.setImageURI("http://img.sibumbg.com/G1/M00/20/A8/CixGgVgQDoiAXmpXAADaMDjvSRE094.jpg");
+        simpleDraweeView.setImageURI(url);
     }
 
     @BindingAdapter({"url"})

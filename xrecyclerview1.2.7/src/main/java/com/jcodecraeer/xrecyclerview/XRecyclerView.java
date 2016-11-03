@@ -374,7 +374,7 @@ public class XRecyclerView extends RecyclerView {
 
     ;
 
-    public class WrapAdapter extends RecyclerView.Adapter<ViewHolder>{
+    public class WrapAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private RecyclerView.Adapter adapter;
 
@@ -419,11 +419,11 @@ public class XRecyclerView extends RecyclerView {
             if (isHeader(position) || isRefreshHeader(position)) {
                 return;
             }
-            int adjPosition = position - getHeadersCount();
+            int adjPosition = position - (getHeadersCount() + 1);
             int adapterCount;
             if (adapter != null) {
                 adapterCount = adapter.getItemCount();
-                if (adjPosition <= adapterCount) {
+                if (adjPosition < adapterCount) {
                     adapter.onBindViewHolder(holder, adjPosition);
                     return;
                 }
@@ -501,7 +501,6 @@ public class XRecyclerView extends RecyclerView {
             }
             adapter.onAttachedToRecyclerView(recyclerView);
         }
-
 
         @Override
         public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
@@ -606,5 +605,4 @@ public class XRecyclerView extends RecyclerView {
             }
         }
     }
-
 }

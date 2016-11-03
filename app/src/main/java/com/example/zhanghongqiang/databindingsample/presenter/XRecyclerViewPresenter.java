@@ -323,8 +323,14 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
                 refreshComplete();
                 return;
             } else {
+                //刷新完成,隐藏进度条...
+                refreshComplete();
+                hideEmptyView();
                 //有数据的话,清空原来的数据,防止数据重复添加
                 clearData();
+                getDataList().addAll(list);
+                mAdapter.notifyDataSetChanged();
+                return;
             }
         }
         //隐藏占位图
@@ -434,6 +440,7 @@ public class XRecyclerViewPresenter<T> extends RecyclerViewContract.XRDelegate {
             } else {
                 mAdapter.notifyItemRangeInserted(position + 2, 1);
             }
+            mRecyclerView.scrollToPosition(position);
         }
     }
 

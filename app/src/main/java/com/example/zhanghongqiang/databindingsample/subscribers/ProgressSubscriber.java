@@ -3,7 +3,6 @@ package com.example.zhanghongqiang.databindingsample.subscribers;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.zhanghongqiang.databindingsample.R;
 import com.example.zhanghongqiang.databindingsample.model.HttpResult;
 import com.example.zhanghongqiang.databindingsample.utils.ToastUtil;
 
@@ -22,7 +21,7 @@ import rx.Subscriber;
 public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
     //观察者的下一步监听
-    private OnNext nextListener;
+    private OnNext mNextListener;
     //显示进度条对话
     private ProgressDialogHandler mProgressDialogHandler;
 
@@ -30,7 +29,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
 
     public ProgressSubscriber(Context context, OnNext nextListener) {
 
-        this.nextListener = nextListener;
+        this.mNextListener = nextListener;
 
         this.context = context;
 
@@ -78,15 +77,15 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
     public void onError(Throwable e) {
         Log.i("123", e.toString());
         dismissProgressDialog();
-        if (nextListener != null && nextListener instanceof OnNextOnError) {
-            ((OnNextOnError) nextListener).onError(e);
+        if (mNextListener != null && mNextListener instanceof OnNextOnError) {
+            ((OnNextOnError) mNextListener).onError(e);
         }
         if (e instanceof ConnectException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
         } else if (e instanceof SocketTimeoutException) {
             ToastUtil.show(context, "网络中断，请检查您的网络状态");
         } else {
-            ToastUtil.show(context, context.getString(R.string.network_error));
+            ToastUtil.show(context, "网络中断，请检查您的网络状态");
         }
 
     }
@@ -97,14 +96,14 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
     @Override
     public void onNext(T t) {
         //这里还需要判断发回的数据是否合法
-        if (nextListener != null) {
+        if (mNextListener != null) {
             HttpResult<T> result = (HttpResult<T>) t;
 //            if (result.code==0){
-//                nextListener.onNext(result);
-//            }else if (nextListener!=null  && nextListener instanceof NoMatch){
-//                ((NoMatch)nextListener).notMatch(result);
+//                mNextListener.onNext(result);
+//            }else if (mNextListener!=null  && mNextListener instanceof NoMatch){
+//                ((NoMatch)mNextListener).notMatch(result);
 //            }
-            nextListener.onNext(result);
+            mNextListener.onNext(result);
 
         }
     }
